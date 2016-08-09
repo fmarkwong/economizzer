@@ -32,3 +32,6 @@ phpunit.phar
 
 # test crawler :
 /views/user/crawler.php
+
+language
+tags
