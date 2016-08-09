@@ -83,7 +83,7 @@ return [
     'Is Pending' => 'Está pendiente',
     'Korean' => 'Corea',
     'Login' => 'Entrar',
-    'Login to access the System' => 'Inicia sesión para acceder al sistema',
+    'Login to access Micro Empire Budgeter' => 'Inicia sesión para acceder al sistema',
     'Magyar' => '',
     'Monthly Comparative Revenue x Expense' => 'Monthly Revenue Comparativo Gasto',
     'Monthly Summary' => 'Resumen Mensual',

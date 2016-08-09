@@ -13,7 +13,7 @@ use app\assets\AppAsset;
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
-    <title>Economizzer</title>
+    <title>Micro Empire Budgeter</title>
     <?php $this->head();
     AppAsset::register($this);
     $js = <<< 'SCRIPT'
@@ -51,7 +51,7 @@ SCRIPT;
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => '<img src="'.Yii::$app->request->baseUrl.'/images/logo-icon.png" style="height:20px;float:left;margin-right: 5px" align="absbottom">  Economizzer',
+                'brandLabel' => '<img src="'.Yii::$app->request->baseUrl.'/images/logo-icon.png" style="height:20px;float:left;margin-right: 5px" align="absbottom">  Micro Empire Budgeter',
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar navbar-default navbar-fixed-top',
@@ -98,9 +98,11 @@ SCRIPT;
 
     <footer class="footer">
         <div class="container" align="center">
-            <?= Html::a('Economizzer', 'http://www.economizzer.org', ['target'=>'_blank']) ?> &copy; <?= date('Y') ?>  
+            <?= Html::a('Micro Empire', 'http://www.micro-empire.org', ['target'=>'_blank']) ?> &copy; <?= date('Y') ?>  
+            <!-- TODO:
             <?= Html::a('<i class="fa fa-twitter-square fa-lg"></i>', 'https://twitter.com/economizzer', ['target'=>'_blank']) ?> 
             <?= Html::a('<i class="fa fa-facebook-square fa-lg"></i>', 'https://www.facebook.com/economizzer', ['target'=>'_blank']) ?>
+            -->
         </div>
     </footer>
 

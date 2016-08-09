@@ -5,7 +5,7 @@ use yii\data\SqlDataProvider;
 use yii\grid\GridView;
 use app\models\Cashbook;
 
-$this->title = 'Economizzer';
+$this->title = 'Micro Empire Budgeter';
 $this->title = Yii::t('app', 'Overview');
 ?>
 <div class="dashboard-index">

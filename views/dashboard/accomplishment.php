@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\View;
 
-$this->title = 'Economizzer';
+$this->title = 'Micro Empire Budgeter';
 $this->title = Yii::t('app', 'Accomplishment');
 ?>
 <div class="dashboard-index">

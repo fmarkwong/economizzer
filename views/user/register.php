@@ -32,7 +32,7 @@ $this->title = Yii::t('app', 'Register');
         <?php if (Yii::$app->getModule("user")->requireEmail): ?>
             <?= $form->field($user, 'email') ?>
             <div class="col-lg-offset-1" style="color:#999;">
-                <p><?= Yii::t('app', 'Enter a valid email! You need to confirm your registration!') ?></p>
+                <!-- TODO: <p><?= Yii::t('app', 'Enter a valid email! You need to confirm your registration!') ?></p> -->
             </div>
         <?php endif; ?>
 
@@ -48,7 +48,7 @@ $this->title = Yii::t('app', 'Register');
 
         <div class="col-lg-offset-1" style="color:#999;">
         <!-- These terms are only Economizzer.org :) -->
-            <p><?= Yii::t('app', 'Creating your account on Economizzer.org you agree to the terms and usage policies,') ?> <?= HTML::a(Yii::t('app', 'Click to read'), "http://www.economizzer.org/policies.html", ['target' => '_blank']) ?></p>
+            <!-- <p><?= Yii::t('app', 'Creating your account on Economizzer.org you agree to the terms and usage policies,') ?> <?= HTML::a(Yii::t('app', 'Click to read'), "http://www.economizzer.org/policies.html", ['target' => '_blank']) ?></p> -->
         </div>
 
         <div class="form-group">
@@ -61,7 +61,7 @@ $this->title = Yii::t('app', 'Register');
 
         <?php ActiveForm::end(); ?>
 
-        <?php if (Yii::$app->get("authClientCollection", false)): ?>
+        <?php if (Yii::$app->get("authClientCollection", false) && false): //TODO: ?>
             <br/>
             <div class="row">
                 <div class="col-lg-offset-2 col-sm-3">
