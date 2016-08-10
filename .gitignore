@@ -13,7 +13,7 @@ nbproject
 Thumbs.db
 
 # composer vendor dir
-/vendor
+vendor/
 
 # development support files
 /dev
@@ -35,3 +35,5 @@ phpunit.phar
 
 language
 tags
+.env
+*.swp

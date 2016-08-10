@@ -1,7 +1,7 @@
 <?php
 
 // NOTE: Make sure this file is not accessible when deployed to production
-if (getenv('HEROKU_ENV') === 'production') {
+if (getenv('APP_ENV') === 'production') {
     die('You are not allowed to access this file.');
 }
 

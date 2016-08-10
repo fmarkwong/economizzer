@@ -1,6 +1,6 @@
 <?php
 
-if (getenv('HEROKU_ENV') === 'production') {
+if (getenv('APP_ENV') === 'production') {
     define('YII_DEBUG', false);
     define('YII_ENV', 'production');
 } else {
