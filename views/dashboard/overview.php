@@ -60,7 +60,7 @@ $this->title = Yii::t('app', 'Overview');
             </div></div></div>
             <div class="col-md-6">
               <div class="panel panel-default">
-              <div class="panel-heading"><strong><?php echo Yii::t('app', 'Evolution');?></strong></div>
+              <div class="panel-heading"><strong><?php echo Yii::t('app', 'Monthly');?></strong></div>
               <div class="panel-body" style="height: 250px;">
               <?php 
               if(round((int)$vtype1) >= abs(round((int)$vtype2)))

@@ -63,7 +63,7 @@ return [
     'Entry successfully deleted' => 'La entrada ha eliminado correctamente',
     'Entry successfully included' => 'Entrada incluida con éxito',
     'Entry updated' => 'Entrada actualiza',
-    'Evolution' => 'Evolución',
+    'Monthly' => 'Evolución',
     'Expense' => 'Gastos',
     'Expenses by Category' => 'Gastos por Categoría',
     'Expenses by Segment' => '',
