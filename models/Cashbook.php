@@ -10,30 +10,6 @@ class Cashbook extends \yii\db\ActiveRecord
     public $file;
     public $filename;
 
-    public function beforeSave($insert)
-    {
-        // transform value into negative number, case Expense criteries
-        if ($this->isNewRecord)
-        {
-            if($this->type_id == 2){
-                $this->value = $this->value*(-1);
-            }
-        }
-
-        if($this->type_id == 2 && $this->value > 0){
-            $this->value = $this->value*(-1);
-        }
-        if($this->type_id == 2 && $this->value < 0){
-            $this->value = $this->value;
-        }
-        if($this->type_id == 1){
-            $this->value = abs($this->value);
-        }
- 
-        return parent::beforeSave($insert);
-    }
-
-
     public static function tableName()
     {
         return 'cashbook';
@@ -42,9 +18,9 @@ class Cashbook extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category_id', 'type_id', 'value', 'date'], 'required'],
+            [['category_id', 'type_id', 'budgeted_value', 'date'], 'required'],
             [['category_id', 'type_id', 'user_id', 'is_pending'], 'integer'],
-            [['value'], 'number'],
+            [['value', 'budgeted_value'], 'number'],
             [['file'], 'file', 'extensions'=>'jpg, png, pdf', 'maxSize' => 1024 * 1024 * 2],
             [['date', 'attachment', 'file', 'filename', 'inc_datetime', 'edit_datetime'], 'safe'],
             [['description'], 'string', 'max' => 100],
@@ -142,6 +118,6 @@ class Cashbook extends \yii\db\ActiveRecord
         foreach($provider as $item){
             $total+=$item[$value];
         }
-        return Yii::t('app', '$')." ".$total;
+        return $total;
     }
 }
