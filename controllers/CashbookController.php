@@ -52,7 +52,7 @@ class CashbookController extends BaseController
     public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->getCashBook($id),
         ]);
     }
     public function actionCreate()
@@ -90,51 +90,45 @@ class CashbookController extends BaseController
     }
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        if ($model->user_id != Yii::$app->user->id){
-            throw new ErrorException(Yii::t('app', 'Forbidden to change entries of other users'));
-        }
-        $oldFile = $model->getImageFile();
-        $oldattachment = $model->attachment;
-        $oldFileName = $model->filename;
-        $model->edit_datetime = date("Y-m-d H:i:s");
+        $cash_book = $this->getCashBook($id);
+        $oldFile = $cash_book->getImageFile();
+        $oldattachment = $cash_book->attachment;
+        $oldFileName = $cash_book->filename;
+        $cash_book->edit_datetime = date("Y-m-d H:i:s");
  
-        if ($model->load(Yii::$app->request->post())) {
+        if ($cash_book->load(Yii::$app->request->post())) {
             // process uploaded image file instance
-            $file = $model->uploadImage();
+            $file = $cash_book->uploadImage();
  
             // revert back if no valid file instance uploaded
             if ($file === false) {
-                $model->attachment = $oldattachment;
-                $model->filename = $oldFileName;
+                $cash_book->attachment = $oldattachment;
+                $cash_book->filename = $oldFileName;
             }
  
-            if ($model->save()) {
+            if ($cash_book->save()) {
                 // upload only if valid uploaded file instance found
                 if ($file !== false && unlink($oldFile)) { // delete old and overwrite
-                    $path = $model->getImageFile();
+                    $path = $cash_book->getImageFile();
                     $file->saveAs($path);
                 }
                 Yii::$app->session->setFlash("Entry-success", Yii::t("app", "Entry updated"));
                 return $this->redirect(['index']);
             } else {
-                // error in saving model
+                // error in saving cash_book
             }
         }
         return $this->render('update', [
-            'model'=>$model,
+            'model'=>$cash_book,
         ]);
     }
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
-        if ($model->user_id != Yii::$app->user->id){
-            throw new ErrorException(Yii::t('app', 'Forbidden to change entries of other users'));
-        }
+        $cash_book = $this->getCashBook($id);
         // validate deletion and on failure process any exception
         // e.g. display an error message
-        if ($model->delete()) {
-            if (!$model->deleteImage()) {
+        if ($cash_book->delete()) {
+            if (!$cash_book->deleteImage()) {
                 Yii::$app->session->setFlash("Entry-danger", 'Error deleting image');
             }
         }
@@ -143,16 +137,16 @@ class CashbookController extends BaseController
     }
     public function actionTarget()
     {
-        $model = new Cashbook();
+        $cash_book = new Cashbook();
         return $this->render('target', [
-                'model' => $model,
+                'model' => $cash_book,
             ]);
     }
 
-    protected function findModel($id)
+    protected function getCashBook($id)
     {
-        if (($model = Cashbook::findOne($id)) !== null && $model->user_id == Yii::$app->user->id) {
-            return $model;
+        if (($cash_book = Cashbook::findOne($id)) !== null && $cash_book->user_id == Yii::$app->user->id) {
+            return $cash_book;
         } else {
             throw new NotFoundHttpException('The page you requested is not available or does not exist.');
         }
