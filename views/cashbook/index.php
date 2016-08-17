@@ -67,18 +67,44 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => function ($model) {                      
                     return $model->date <> '' ? Yii::$app->formatter->asDate($model->date, 'short') : Yii::$app->formatter->asDate($model->date, 'short');
                     },
-             'contentOptions'=>['style'=>'width: 15%;text-align:left'],
+            // 'contentOptions'=>['style'=>'width: 15%;text-align:left'],
+            'contentOptions'=>['style'=>'text-align:left'],
             'footer' => 'Total',
             ],
+            // Parent Category
+            [
+            'attribute' => 'parent_category_id',
+            'format' => 'raw',
+            'enableSorting' => true,
+            'value' => function ($model) {                      
+                    return '<span style="color:'.$model->category->hexcolor_category.'">'.$model->getParentCategory()->desc_category.'</span>';
+                    },
+            // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
+            'contentOptions'=>['style'=>'text-align:left'],
+            'footerOptions' => ['style'=>'text-align:left'],                  
+            ],
+            //sub category
             [
             'attribute' => 'category_id',
             'format' => 'raw',
             'enableSorting' => true,
             'value' => function ($model) {                      
-                    return $model->description <> '' ? '<span style="color:'.$model->category->hexcolor_category.'">'.$model->category->desc_category.'</span>'.' <em class="text-muted">('.$model->description.')</em>' : '<span style="color:'.$model->category->hexcolor_category.'">'.$model->category->desc_category.'</span>';
+                    return '<span style="color:'.$model->category->hexcolor_category.'">'.$model->category->desc_category.'</span>';
                     },
-            'contentOptions'=>['style'=>'width: 35%;text-align:left'],
-            'footerOptions' => ['style'=>'text-align:letf'],                  
+            // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
+            'contentOptions'=>['style'=>'text-align:left'],
+            'footerOptions' => ['style'=>'text-align:left'],                  
+            ],
+            [
+            'attribute' => 'description',
+            'format' => 'raw',
+            'enableSorting' => true,
+            'value' => function ($model) {                      
+                           return $model->description; 
+                    },
+            // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
+            'contentOptions'=>['style'=>'text-align:left'],
+            'footerOptions' => ['style'=>'text-align:left'],                  
             ],
             [
             'attribute' => 'budgeted_value',
@@ -87,9 +113,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => function ($model) {                      
                         return $model->budgeted_value;
                     },
-            'contentOptions'=>['style'=>'width: 20%;text-align:left'],
+            // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
+            'contentOptions'=>['style'=>'text-align:left'],
              'footer' => Cashbook::pageTotal($dataProvider->models,'budgeted_value'),
-            'footerOptions' => ['style'=>'text-align:letf'],                  
+            'footerOptions' => ['style'=>'text-align:left'],                  
             ],
             [
              'label' => 'Actual Value',
@@ -100,7 +127,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     '<span class="glyphicon glyphicon-flag" style="color:orange" aria-hidden="true"></span> <strong style="color:'.$model->type->hexcolor_type.'">'.' '.$model->value.'</strong>';
                     },
              'enableSorting' => true,
-             'contentOptions'=>['style'=>'width: 20%;text-align:left'],
+            'contentOptions'=>['style'=>'text-align:left'],
+             // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
              'footer' => Cashbook::pageTotal($dataProvider->models,'value'),
              'footerOptions' => ['style'=>'text-align:left'],
             ],
@@ -112,7 +140,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $model->budgeted_value - $model->value;
                     },
              'enableSorting' => true,
-             'contentOptions'=>['style'=>'width: 20%;text-align:left'],
+             // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
+            'contentOptions'=>['style'=>'text-align:left'],
              'footer' => Cashbook::pageTotal($dataProvider->models,'budgeted_value') - Cashbook::pageTotal($dataProvider->models,'value'),
              'footerOptions' => ['style'=>'text-align:left'],
             ],

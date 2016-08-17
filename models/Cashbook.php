@@ -83,7 +83,8 @@ class Cashbook extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'category_id' => Yii::t('app', 'Category'),
+            'category_id' => Yii::t('app', 'Sub Category'),
+            'parent_category_id' => Yii::t('app', 'Parent Category'),
             'type_id' => Yii::t('app', 'Type'),
             'value' => Yii::t('app', 'Value'),
             'description' => Yii::t('app', 'Description'),
@@ -106,6 +107,12 @@ class Cashbook extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Category::className(), ['id_category' => 'category_id']);
     }
+
+    public function getParentCategory()
+    {
+        return Category::findOne($this->getCategory()->one()->parent_id) ;
+    }
+    
 
     public function getUser()
     {
