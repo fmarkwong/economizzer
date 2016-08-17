@@ -127,4 +127,13 @@ class Cashbook extends \yii\db\ActiveRecord
         }
         return $total;
     }
+
+    public static function footerColor($value)
+    {
+        $green = "#18bc9c";
+        $red = "#e74c3c";
+        $color = $value >= 0 ? $green : $red;
+        if ($value == 0) $color = "#000000";
+        return $color;
+    }
 }

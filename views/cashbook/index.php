@@ -123,8 +123,7 @@ $this->params['breadcrumbs'][] = $this->title;
              'attribute' => 'value',
              'format' => 'raw',
              'value' => function ($model) {  
-                    return $model->is_pending === 0 ? '<strong style="color:'.$model->type->hexcolor_type.'">'.' '.$model->value.'</strong>' :
-                    '<span class="glyphicon glyphicon-flag" style="color:orange" aria-hidden="true"></span> <strong style="color:'.$model->type->hexcolor_type.'">'.' '.$model->value.'</strong>';
+                    return $model->is_pending === 0 ? $model->value : '<span class="glyphicon glyphicon-flag" style="color:orange" aria-hidden="true"></span> <strong style="color:'.$model->type->hexcolor_type.'">'.' '.$model->value.'</strong>';
                     },
              'enableSorting' => true,
             'contentOptions'=>['style'=>'text-align:left'],
@@ -137,13 +136,15 @@ $this->params['breadcrumbs'][] = $this->title;
              'attribute' => 'value',
              'format' => 'raw',
              'value' => function ($model) {  
-                            return $model->budgeted_value - $model->value;
+                        $value = $model->budgeted_value - $model->value;
+                        $color = Cashbook::footerColor($value);
+                        return "<strong style='color: $color'>" . $value . '</strong>';
                     },
              'enableSorting' => true,
              // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
             'contentOptions'=>['style'=>'text-align:left'],
              'footer' => Cashbook::pageTotal($dataProvider->models,'budgeted_value') - Cashbook::pageTotal($dataProvider->models,'value'),
-             'footerOptions' => ['style'=>'text-align:left'],
+             'footerOptions' => ['style'=>'text-align:left;color:' . Cashbook::footerColor(Cashbook::pageTotal($dataProvider->models,'budgeted_value') - Cashbook::pageTotal($dataProvider->models,'value'))],
             ],
         ],
     ]);
