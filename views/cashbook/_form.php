@@ -52,8 +52,8 @@ use kartik\widgets\DatePicker;
         ]);
     ?>
     
-    <?= $form->field($model, 'budgeted_value')->textInput(['size' => 10]) ?>
-    <?= $form->field($model, 'value')->textInput(['size' => 10])->label('Actual Value') ?>
+    <?= $form->field($model, 'budgeted_value')->textInput(['size' => 10])->label('Budgeted Cost') ?>
+    <?= $form->field($model, 'value')->textInput(['size' => 10])->label('Actual Cost') ?>
 
     <?php // echo $form->field($model, 'category_id')->dropDownList(ArrayHelper::map(Category::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_active' => 1])->orderBy("desc_category ASC")->all(), 'id_category', 'desc_category'),['prompt'=>Yii::t('app','Select')])  ?>
 

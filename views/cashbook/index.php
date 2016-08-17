@@ -107,6 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'footerOptions' => ['style'=>'text-align:left'],                  
             ],
             [
+            'label' => 'Budgeted Cost',
             'attribute' => 'budgeted_value',
             'format' => 'raw',
             'enableSorting' => true,
@@ -119,7 +120,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'footerOptions' => ['style'=>'text-align:left'],                  
             ],
             [
-             'label' => 'Actual Value',
+             'label' => 'Actual Cost',
              'attribute' => 'value',
              'format' => 'raw',
              'value' => function ($model) {  
