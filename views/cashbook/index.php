@@ -107,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'footerOptions' => ['style'=>'text-align:left'],                  
             ],
             [
-            'label' => 'Budgeted Cost',
+            'label' => 'Budgeted Value',
             'attribute' => 'budgeted_value',
             'format' => 'raw',
             'enableSorting' => true,
@@ -120,7 +120,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'footerOptions' => ['style'=>'text-align:left'],                  
             ],
             [
-             'label' => 'Actual Cost',
+             'label' => 'Actual Value',
              'attribute' => 'value',
              'format' => 'raw',
              'value' => function ($model) {  
@@ -136,8 +136,11 @@ $this->params['breadcrumbs'][] = $this->title;
              'label' => 'Balance',
              'attribute' => 'value',
              'format' => 'raw',
-             'value' => function ($model) {  
-                        $value = $model->budgeted_value - $model->value;
+             'value' => function ($cash_book) {  
+                        if ($cash_book->type_id == 1 ) // income
+                            $value = $cash_book->value - $cash_book->budgeted_value;
+                        else // expense
+                            $value = $cash_book->budgeted_value - $cash_book->value;
                         $color = Cashbook::footerColor($value);
                         return "<strong style='color: $color'>" . $value . '</strong>';
                     },
