@@ -78,32 +78,34 @@ $this->params['breadcrumbs'][] = $this->title;
         <tbody>
             <?php foreach($categories as $category): ?>
             <?php if ($category['parent_id'] == 1) continue //skip income ?>
+            <?php $color = Cashbook::footerColor($category_balance = $category['budgeted_total'] - $category['actual_total']) ?>
                 <tr id="6" onclick="location.href=&quot;/budgeter/web/cashbook/&quot;+(this.id);" style="border: solid thin;cursor: pointer;background-color: #ffbf00" data-key="6">
                     <td style="text-align:left"><span style="color:"><?= $top_category_desc_array[$category['parent_id']] ?></span></td>
-                    <td style="text-align:left;padding-left: 2em"><?php  echo $category['budgeted_total']?></td>
-                    <td style="text-align:left;padding-left: 2em"><?php  echo $category['actual_total']?></td>
-                    <td style="text-align:left;padding-left: 2em"><strong style='color: #18bc9c'><?php echo$category['budgeted_total'] - $category['actual_total']?></strong></td>
+                    <td style="text-align:left;padding-left: 2em"><?=$category['budgeted_total']?></td>
+                    <td style="text-align:left;padding-left: 2em"><?=$category['actual_total']?></td>
+                    <td style="text-align:left;padding-left: 2em"><strong style='color:<?=$color?>'><?=$category_balance?></strong></td>
                 </tr>
                 <?php $sub_categories = app\models\Category::find()->where(['parent_id' => $category['parent_id']])->all(); ?>
-                <?php foreach($sub_categories as $category): ?>
+                <?php foreach($sub_categories as $sub_category): ?>
+                    <?php $color = Cashbook::footerColor($sub_category_balance = $sub_category->budgeted_value - $sub_category->actual_value) ?>
                     <tr id="6" onclick="location.href=&quot;/budgeter/web/cashbook/&quot;+(this.id);" style="cursor: pointer" data-key="6">
-                        <td style="text-align:left;padding-left: 2em"><span style="color:"><?= $category->desc_category ?></span></td>
-                        <td style="text-align:left;padding-left: 2em"><?php  echo $category['budgeted_value']?></td>
-                        <td style="text-align:left;padding-left: 2em"><?php  echo $category['actual_value']?></td>
-                        <td style="text-align:left;padding-left: 2em"><strong style='color: #18bc9c'><?php echo $category->budgeted_value - $category->actual_value?></strong></td>
+                        <td style="text-align:left;padding-left: 2em"><span style="color:"><?=$sub_category->desc_category?></span></td>
+                        <td style="text-align:left;padding-left: 2em"><?=$sub_category->budgeted_value?></td>
+                        <td style="text-align:left;padding-left: 2em"><?=$sub_category->actual_value?></td>
+                        <td style="text-align:left;padding-left: 2em"><strong style='color: <?=$color?>'><?=$sub_category_balance?></strong></td>
                     </tr>
                 <?php endforeach ?>
             <?php endforeach ?>
         </tbody>
     </table>
-</div>
-</div>
-</div>
-</div>
-
-
-
 <!-- END BUDGET TABLE -->
+</div>
+</div>
+</div>
+</div>
+
+
+
     
 <?php 
 /*   OLD GRID CODE FOR REFERENCE TODO:
