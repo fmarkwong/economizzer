@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Cashbook;
+use app\models\Category;
 use app\models\CashbookSearch;
 use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
@@ -57,6 +58,14 @@ class CashbookController extends BaseController
     }
     public function actionCreate()
     {
+        if ($post = Yii::$app->request->post()) {
+            $post = $post['Cashbook'];
+            $category = Category::findOne($post['category_id']);
+            $category->budgeted_value += $post['budgeted_value'];
+            $category->actual_value += $post['value'];
+            $category->save();
+        }
+
         $model = new Cashbook;
         $model->inc_datetime = date("Y-m-d H:i:s"); 
         $model->user_id = Yii::$app->user->identity->id;

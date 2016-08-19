@@ -42,8 +42,72 @@ $this->params['breadcrumbs'][] = $this->title;
             <p><?=$message?></p>
         </div>
     <?php endforeach ?>
+
+<!-- BUDGET TABLE -->
+<?php
+    $top_categories = app\models\Category::findBySql('SELECT id_category, desc_category from category WHERE parent_id IS NULL')->asArray()->all();
+
+    $top_category_array = [];
+    foreach($top_categories as $tp) {
+        $top_category_desc_array[$tp['id_category']] = $tp['desc_category']; 
+    }
+    $categories = app\models\Category::findBySql('SELECT *, sum(budgeted_value) as budgeted_total, sum(actual_value) as actual_total FROM category GROUP BY parent_id HAVING parent_id IS NOT NULL')->asArray()->all();
+    $all_categories = app\models\Category::find()->all();
+    $category_budgeted_value_total = app\models\Cashbook::pageTotal($all_categories, 'budgeted_value');
+    $category_actual_value_total = app\models\Cashbook::pageTotal($all_categories, 'actual_value');
+?>
+
+<div id="w1" class="grid-view">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th><a href="/budgeter/web/cashbook/index?sort=parent_category_id" data-sort="parent_category_id">Category</a></th>
+                <th><a href="/budgeter/web/cashbook/index?sort=budgeted_value" data-sort="budgeted_value">Budgeted Value</a></th>
+                <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Actual Value</a></th>
+                <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Balance</a></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr style="font-weight:bold;">
+                <td style="text-align:left;padding-left: 2em">Total</td>
+                <td style="text-align:left;padding-left: 2em"><?=$category_budgeted_value_total?></td>
+                <td style="text-align:left;padding-left: 2em"><?=$category_actual_value_total?></td>
+                <td style="text-align:left;color:#18bc9c;padding-left: 2em"><?=$category_budgeted_value_total - $category_actual_value_total?></td>
+            </tr>
+        </tfoot>
+        <tbody>
+            <?php foreach($categories as $category): ?>
+            <?php if ($category['parent_id'] == 1) continue //skip income ?>
+                <tr id="6" onclick="location.href=&quot;/budgeter/web/cashbook/&quot;+(this.id);" style="border: solid thin;cursor: pointer;background-color: #ffbf00" data-key="6">
+                    <td style="text-align:left"><span style="color:"><?= $top_category_desc_array[$category['parent_id']] ?></span></td>
+                    <td style="text-align:left;padding-left: 2em"><?php  echo $category['budgeted_total']?></td>
+                    <td style="text-align:left;padding-left: 2em"><?php  echo $category['actual_total']?></td>
+                    <td style="text-align:left;padding-left: 2em"><strong style='color: #18bc9c'><?php echo$category['budgeted_total'] - $category['actual_total']?></strong></td>
+                </tr>
+                <?php $sub_categories = app\models\Category::find()->where(['parent_id' => $category['parent_id']])->all(); ?>
+                <?php foreach($sub_categories as $category): ?>
+                    <tr id="6" onclick="location.href=&quot;/budgeter/web/cashbook/&quot;+(this.id);" style="cursor: pointer" data-key="6">
+                        <td style="text-align:left;padding-left: 2em"><span style="color:"><?= $category->desc_category ?></span></td>
+                        <td style="text-align:left;padding-left: 2em"><?php  echo $category['budgeted_value']?></td>
+                        <td style="text-align:left;padding-left: 2em"><?php  echo $category['actual_value']?></td>
+                        <td style="text-align:left;padding-left: 2em"><strong style='color: #18bc9c'><?php echo $category->budgeted_value - $category->actual_value?></strong></td>
+                    </tr>
+                <?php endforeach ?>
+            <?php endforeach ?>
+        </tbody>
+    </table>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<!-- END BUDGET TABLE -->
     
-    <?= GridView::widget([
+<?php 
+/*   OLD GRID CODE FOR REFERENCE TODO:
+GridView::widget([
         'dataProvider' => $dataProvider,
         'tableOptions' => ['class'=>'table table-striped table-hover'],
         'emptyText'    => '</br><p class="text-danger">'.Yii::t('app', 'No entries found!').'</p>',
@@ -197,3 +261,5 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     </div>
 </div>
+ */
+

@@ -31,10 +31,11 @@ use kartik\widgets\DatePicker;
     <div class="tab-pane active" id="home">
     <p>
     <?php 
-    echo $form->field($model, 'type_id')->radioList([
-        '1' => Yii::t('app', 'Revenue'), 
-        '2' => Yii::t('app', 'Expense'),
-        ], ['itemOptions' => ['class' =>'radio-inline','labelOptions'=>array('style'=>'padding:4px;')]])->label('');
+    // echo $form->field($model, 'type_id')->radioList([
+    //     '1' => Yii::t('app', 'Revenue'), 
+    //     '2' => Yii::t('app', 'Expense'),
+    //     ], ['itemOptions' => ['class' =>'radio-inline','labelOptions'=>array('style'=>'padding:4px;')]])->label('');
+    echo $form->field($model, 'type_id')->hiddenInput(['value' => '2'])->label(false);
     ?>
 
     <?php

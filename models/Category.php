@@ -14,6 +14,7 @@ class Category extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['budgeted_value', 'actual_value'], 'number'],
             [['desc_category', 'is_active'], 'required'],
             [['is_active','user_id','parent_id'], 'integer'],
             [['desc_category', 'hexcolor_category'], 'string', 'max' => 45]
@@ -24,6 +25,9 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             'id_category' => Yii::t('app', 'ID'),
+            'budgeted_value' => Yii::t('app', 'Budgeted Value'),
+            'budgeted_total' => Yii::t('app', 'Budgeted Total'),
+            'actual_value' => Yii::t('app', 'Actual Value'),
             'desc_category' => Yii::t('app', 'Description'),
             'hexcolor_category' => Yii::t('app', 'Color'),
             'parent_id' => Yii::t('app', 'Parent Category'),
