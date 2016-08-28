@@ -32,8 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <h2>
               <span><?= Html::encode($this->title) ?></span>
               <?php $total_budgeted_value = (app\models\Cashbook::findBySql('SELECT SUM(budgeted_value) as total_budgeted_value FROM cashbook WHERE user_id = :user_id', [':user_id' => Yii::$app->user->id])->asArray()->one())?>
-              <?php $account_balance = app\models\Account::findOne(['user_id' => YII::$app->user->id, 'name' => 'cash'])->balance ?>
-              <?php $total_left_to_budget = $account_balance - $total_budgeted_value['total_budgeted_value'] ?>
+              <?php $total_left_to_budget = app\models\Account::findOne(['user_id' => YII::$app->user->id, 'name' => 'cash'])->to_be_budgeted ?>
+              <?php //$total_left_to_budget = $account_balance - $total_budgeted_value['total_budgeted_value'] ?>
               <?php $color = Cashbook::footerColor($total_left_to_budget) ?>
               <span style="color: <?=$color?>; font-size: 20px; vertical-align: middle"> Left to budget: <?= $total_left_to_budget?></span>
                 <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/cashbook/create'], ['class'=>'btn btn-primary grid-button pull-right']) ?>

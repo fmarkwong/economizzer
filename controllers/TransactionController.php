@@ -24,14 +24,15 @@ class TransactionController extends BaseController
         $transaction->load(Yii::$app->request->post());
 
         if ($transaction->category->type->desc_type === 'Revenue') {
-            error_log('Revenue');
-            error_log("account balance: " . $transaction->account->balance);
-            error_log("transaction value: " . $transaction->value);
+            // error_log('Revenue');
+            // error_log("account balance: " . $transaction->account->balance);
+            // error_log("transaction value: " . $transaction->value);
             $transaction->account->balance += $transaction->value;
+            $transaction->account->to_be_budgeted += $transaction->value;
         } elseif ($transaction->category->type->desc_type === 'Expense') {
-            error_log('Expense');
-            error_log("account balance:" . $transaction->account->balance);
-            error_log("transaction value:" . $transaction->value);
+            // error_log('Expense');
+            // error_log("account balance:" . $transaction->account->balance);
+            // error_log("transaction value:" . $transaction->value);
             $transaction->account->balance -= $transaction->value;
         } else {
             throw new Exception("Category Type Error");

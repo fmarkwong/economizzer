@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Cashbook;
+use app\models\Account;
 use app\models\Category;
 use app\models\CashbookSearch;
 use yii\base\ErrorException;
@@ -63,6 +64,9 @@ class CashbookController extends BaseController
             $category = Category::findOne($post['category_id']);
             $category->budgeted_value += $post['budgeted_value'];
             $category->save();
+            $account = Account::findOne(['user_id' => YII::$app->user->id, 'name' => 'cash']);
+            $account->to_be_budgeted -= $post['budgeted_value'];
+            $account->save();
         }
 
         $model = new Cashbook;
