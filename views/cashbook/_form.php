@@ -53,8 +53,6 @@ use kartik\widgets\DatePicker;
         ]);
     ?>
     
-    <?= $form->field($model, 'budgeted_value')->textInput(['size' => 10])->label('Budgeted Value') ?>
-    <?= $form->field($model, 'value')->textInput(['size' => 10])->label('Actual Value') ?>
 
     <?php // echo $form->field($model, 'category_id')->dropDownList(ArrayHelper::map(Category::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_active' => 1])->orderBy("desc_category ASC")->all(), 'id_category', 'desc_category'),['prompt'=>Yii::t('app','Select')])  ?>
 
@@ -64,8 +62,10 @@ use kartik\widgets\DatePicker;
             'class' => 'selectpicker '
         ]
     ]
-    )->dropDownList(app\models\Category::getHierarchy(), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
+    )->dropDownList(app\models\Category::getHierarchy(true), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
     ?>
+
+    <?= $form->field($model, 'budgeted_value')->textInput(['size' => 10])->label('Budgeted Value') ?>
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => 100]) ?>
 

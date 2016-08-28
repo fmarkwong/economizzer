@@ -65,7 +65,7 @@ CREATE TABLE `profile` (
 -- Records of profile
 -- ----------------------------
 INSERT INTO `profile` VALUES ('1', '1', '2015-01-25 02:53:12', null, 'the one', 'en', 'cashbook/index');
-INSERT INTO `profile` VALUES ('3', '3', '2015-02-14 03:03:28', '2015-12-24 19:55:40', 'Joe Mac', 'pt', 'cashbook/index');
+INSERT INTO `profile` VALUES ('3', '3', '2015-02-14 03:03:28', '2015-12-24 19:55:40', 'Joe Mac', 'en', 'cashbook/index');
 
 -- ----------------------------
 -- Table structure for `role`

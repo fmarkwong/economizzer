@@ -45,10 +45,14 @@ class Category extends \yii\db\ActiveRecord
        return $this->hasOne(User::className(), ['id' => 'user_id']); 
     } 
 
-    public static function getHierarchy() {
+    public static function getHierarchy($exclude_income = false) {
         $options = [];
          
-        $parents = self::find()->where(['parent_id' => null,'user_id' => Yii::$app->user->identity->id, 'is_active' => 1])->all();
+        $parents = self::find()->where(['parent_id' => null,'user_id' => Yii::$app->user->identity->id, 'is_active' => 1]);
+
+        if ($exclude_income) $parents = $parents->andWhere(['!=', 'desc_category', 'Income']);
+        $parents = $parents->all();
+
         foreach($parents as $id_category => $p) {
             $children = self::find()->where("parent_id=:parent_id", [":parent_id"=>$p->id_category])->all();
             $child_options = [];
@@ -59,6 +63,18 @@ class Category extends \yii\db\ActiveRecord
         }
         return $options;
     }      
+
+    public function getDescription()
+    {
+        return $this->desc_category;
+    }
+
+    public function getType()
+    {
+        return $this->hasOne(Type::className(), ['id_type' => 'type_id']);
+    }
+    
+    
 
     public function getParent()
     {

@@ -62,7 +62,6 @@ class CashbookController extends BaseController
             $post = $post['Cashbook'];
             $category = Category::findOne($post['category_id']);
             $category->budgeted_value += $post['budgeted_value'];
-            $category->actual_value += $post['value'];
             $category->save();
         }
 
@@ -92,7 +91,7 @@ class CashbookController extends BaseController
             } else {
                 // error in saving model
             }
-        }
+        }// post vars empty, a brand new create
         return $this->render('create', [
             'model' => $model,
         ]);

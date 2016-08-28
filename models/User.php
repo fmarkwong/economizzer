@@ -57,4 +57,14 @@ class User extends BaseUser
             'currentPassword' => Yii::t('app', 'Current Password'),
         ];
     }    
+
+    public function getCategories()
+    {
+        return $this->hasMany(Category::className(), ['user_id' => 'id']);
+    }
+
+    public function getAccounts()
+    {
+        return $this->hasMany(Account::className(), ['user_id' => 'id']);
+    }
 }
