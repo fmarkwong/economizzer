@@ -67,8 +67,6 @@ use kartik\widgets\DatePicker;
 
     <?= $form->field($model, 'budgeted_value')->textInput(['size' => 10])->label('Budgeted Value') ?>
 
-    <?= $form->field($model, 'description')->textInput(['maxlength' => 100]) ?>
-
     </div>
     <div class="tab-pane" id="profile">
 
