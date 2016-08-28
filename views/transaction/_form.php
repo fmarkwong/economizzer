@@ -64,8 +64,8 @@ use kartik\widgets\DatePicker;
         ])->dropDownList(app\models\Category::getHierarchy(), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
         ?>
 
-        <?= $form->field($transaction, 'description')->textInput(['maxlength' => 100]) ?>
         <?= $form->field($transaction, 'value')->textInput(['size' => 10]) ?>
+        <?= $form->field($transaction, 'description')->textInput(['maxlength' => 100]) ?>
 
         </div>
     </div>
