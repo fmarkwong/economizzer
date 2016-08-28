@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Transaction;
+use app\models\Category;
 
 class TransactionController extends BaseController
 {
@@ -34,13 +35,16 @@ class TransactionController extends BaseController
             // error_log("account balance:" . $transaction->account->balance);
             // error_log("transaction value:" . $transaction->value);
             $transaction->account->balance -= $transaction->value;
+            $current_actual_value = Category::findOne(['id_category' => $transaction->category->id_category,
+                                                        'user_id'    => Yii::$app->user->id,
+                                    ])->actual_value;
+            $transaction->category->actual_value = $current_actual_value + (float)$transaction->value;
         } else {
             throw new Exception("Category Type Error");
         }
 
         $transaction->account->save();
 
-        $transaction->category->actual_value = $transaction->value;
         $transaction->category->save();
 
         if ($transaction->save()) {
