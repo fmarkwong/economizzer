@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use app\models\Cashbook;
+use app\helpers\CashBookHelper;
+use app\helpers\ViewHelper;
 
 $this->title = Yii::t('app', 'Budget');
 $this->params['breadcrumbs'][] = $this->title;
@@ -31,39 +33,18 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="cashbook-index">
             <h2>
               <span><?= Html::encode($this->title) ?></span>
-              <?php $total_budgeted_value = (app\models\Cashbook::findBySql('SELECT SUM(budgeted_value) as total_budgeted_value FROM cashbook WHERE user_id = :user_id', [':user_id' => Yii::$app->user->id])->asArray()->one())?>
-              <?php $total_left_to_budget = app\models\Account::findOne(['user_id' => YII::$app->user->id, 'name' => 'cash'])->to_be_budgeted ?>
-              <?php //$total_left_to_budget = $account_balance - $total_budgeted_value['total_budgeted_value'] ?>
-              <?php $color = Cashbook::footerColor($total_left_to_budget) ?>
-              <span style="color: <?=$color?>; font-size: 20px; vertical-align: middle"> Left to budget: <?= $total_left_to_budget?></span>
+              <?php $color = CashBookHelper::balanceColor($totalLeftToBudget) ?>
+              <span style="color: <?=$color?>; font-size: 20px; vertical-align: middle"> Left to budget: <?= $totalLeftToBudget?></span>
                 <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/cashbook/create'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
             </h2>
-            <hr/>
+            <hr>
 
-            <?php foreach (Yii::$app->session->getAllFlashes() as $key=>$message):?>
-                <?php $alertClass = substr($key,strpos($key,'-')+1); ?>
-                <div class="alert alert-dismissible alert-<?=$alertClass?>" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <p><?=$message?></p>
-                </div>
-            <?php endforeach ?>
+            <?php ViewHelper::displayAllFlashes() ?>
 
     <!-- BUDGET TABLE -->
             <?php
-                // $top_categories = app\models\Category::findBySql('SELECT id_category, desc_category from category WHERE parent_id IS NULL')->asArray()->all();
-                $top_categories = app\models\Category::findBySql('SELECT id_category, desc_category from category WHERE parent_id IS NULL AND user_id=:user_id', [':user_id' => Yii::$app->user->id])->asArray()->all();
 
-                $top_category_array = [];
-                foreach($top_categories as $tp) {
-                    $top_category_desc_array[$tp['id_category']] = $tp['desc_category']; 
-                }
-                // this will only show parent categories that have subcategories (because of the GROUP BY clause
-                $categories = app\models\Category::findBySql('SELECT *, sum(budgeted_value) as budgeted_total, sum(actual_value) as actual_total FROM category WHERE user_id=:user_id GROUP BY parent_id HAVING parent_id IS NOT NULL', [':user_id' => Yii::$app->user->id])->asArray()->all();
-                $all_categories = app\models\Category::find()->all();
-                $category_budgeted_value_total = app\models\Cashbook::pageTotal($all_categories, 'budgeted_value');
-                $category_actual_value_total = app\models\Cashbook::pageTotal($all_categories, 'actual_value');
-                $total_budget_balance = $category_budgeted_value_total - $category_actual_value_total;
-                $color = app\models\CashBook::footerColor($total_budget_balance);
+                $color = cashBookHelper::balanceColor($totalBudgetBalance);
             ?>
 
             <div id="w1" class="grid-view">
@@ -76,36 +57,21 @@ $this->params['breadcrumbs'][] = $this->title;
                             <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Balance</a></th>
                         </tr>
                     </thead>
-                    <!-- <tfoot> -->
-                    <!--     <tr style="font&#45;weight:bold;"> -->
-                    <!--         <td style="text&#45;align:left;">Total</td> -->
-                    <!--         <td style="text&#45;align:left;padding&#45;left: 2em"><?=$category_budgeted_value_total?></td> -->
-                    <!--         <td style="text&#45;align:left;padding&#45;left: 2em"><?=$category_actual_value_total?></td> -->
-                    <!--         <td style="text&#45;align:left;color:<?=$color?>;padding&#45;left: 2em"><?=$total_budget_balance?></td> -->
-                    <!--     </tr> -->
-                    <!-- </tfoot> -->
                     <tbody>
-                        <?php foreach($categories as $category): ?>
-                        <?php $parent_category = $top_category_desc_array[$category['parent_id']] ?>
-                        <?php if ($parent_category === 'Income') continue?>
-                        <?php $color = Cashbook::footerColor($category_balance = $category['budgeted_total'] - $category['actual_total']) ?>
-                            <tr id="6" onclick="location.href=&quot;/budgeter/web/cashbook/&quot;+(this.id);" style="border: solid thin;cursor: pointer;background-color: #ffbf00" data-key="6">
-                                <td style="text-align:left"><span style="color:"><?= $parent_category ?></span></td>
-                                <td style="text-align:left;padding-left: 2em"><?=$category['budgeted_total']?></td>
-                                <td style="text-align:left;padding-left: 2em"><?=$category['actual_total']?></td>
-                                <td style="text-align:left;padding-left: 2em"><strong style='color:<?=$color?>'><?=$category_balance?></strong></td>
-                            </tr>
-                            <?php $sub_categories = app\models\Category::find()->where(['parent_id' => $category['parent_id']])->all(); ?>
-                            <?php foreach($sub_categories as $sub_category): ?>
-                                <?php $color = Cashbook::footerColor($sub_category_balance = $sub_category->budgeted_value - $sub_category->actual_value) ?>
-                                <tr id="6" onclick="location.href=&quot;/budgeter/web/cashbook/&quot;+(this.id);" style="cursor: pointer" data-key="6">
-                                    <td style="text-align:left;padding-left: 2em"><span style="color:"><?=$sub_category->desc_category?></span></td>
-                                    <td style="text-align:left;padding-left: 2em"><?=$sub_category->budgeted_value?></td>
-                                    <td style="text-align:left;padding-left: 2em"><?=$sub_category->actual_value?></td>
-                                    <td style="text-align:left;padding-left: 2em"><strong style='color: <?=$color?>'><?=$sub_category_balance?></strong></td>
-                                </tr>
-                            <?php endforeach ?>
-                        <?php endforeach ?>
+<?php 
+                    foreach($categories as $category) {
+                        $parent_category = $topCategoryDescriptionArray[$category['parent_id']];
+                        $sub_categories = app\models\Category::subCategories($category['parent_id']); 
+                        if ($parent_category === 'Income') continue;
+                        $left_to_budget_color = cashBookHelper::balanceColor($category_balance = $category['budgeted_total'] - $category['actual_total']);
+                        echo $this->render('_parent_category_row', compact('parent_category', 'category', 'left_to_budget_color', 'category_balance'));
+
+                        foreach($sub_categories as $sub_category) {
+                            $sub_category_balance_color = cashBookHelper::balanceColor($sub_category_balance = $sub_category->budgeted_value - $sub_category->actual_value);
+                            echo $this->render('_sub_category_row', compact('sub_category_balance_color', 'sub_category', 'sub_category_balance'));
+                        }
+                    } 
+?>
                     </tbody>
                 </table> <!-- END BUDGET TABLE -->
             </div> <!-- w1 gridview-->
@@ -114,38 +80,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="cashbook-index">  <!-- TRANSACTIONS -->
             <h2>
                 <span>Account</span>
-                <?php $account_balance = app\models\Account::findOne(['user_id' => YII::$app->user->id, 'name' => 'cash'])->balance ?>
-                <?php $color = app\models\Cashbook::footerColor($account_balance) ?>
-                <span style="color: <?=$color?>; font-size: 20px; vertical-align: middle"> Balance: <?= $account_balance ?></span>
+                <?php $account_balance_color = cashBookHelper::balanceColor($accountBalance) ?>
+                <span style="color: <?=$account_balance_color?>; font-size: 20px; vertical-align: middle"> Balance: <?= $accountBalance ?></span>
                 <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Add').'', ['/transaction/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
             </h2>
             <hr/>
-<!--
-            <?php foreach (Yii::$app->session->getAllFlashes() as $key=>$message):?>
-                <?php $alertClass = substr($key,strpos($key,'-')+1); ?>
-                <div class="alert alert-dismissible alert-<?=$alertClass?>" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <p><?=$message?></p>
-                </div>
-            <?php endforeach ?>
--->
 
     <!-- TRANSACTIONS TABLE -->
-            <?php
-                // $top_categories = app\models\Category::findBySql('SELECT id_category, desc_category from category WHERE parent_id IS NULL')->asArray()->all();
-
-                // $top_category_array = [];
-                // foreach($top_categories as $tp) {
-                //     $top_category_desc_array[$tp['id_category']] = $tp['desc_category']; 
-                // }
-                // $categories = app\models\Category::findBySql('SELECT *, sum(budgeted_value) as budgeted_total, sum(actual_value) as actual_total FROM category GROUP BY parent_id HAVING parent_id IS NOT NULL')->asArray()->all();
-                // $all_categories = app\models\Category::find()->all();
-                // $category_budgeted_value_total = app\models\Cashbook::pageTotal($all_categories, 'budgeted_value');
-                // $category_actual_value_total = app\models\Cashbook::pageTotal($all_categories, 'actual_value');
-
-                $transactions = app\models\Transaction::findAll(['user_id' => YII::$app->user->id]);
-                
-            ?>
 
             <div id="w1" class="grid-view">
                 <table class="table table-striped table-hover">
@@ -157,29 +98,15 @@ $this->params['breadcrumbs'][] = $this->title;
                             <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Value</a></th>
                         </tr>
                     </thead>
-<!--
-                    <tfoot>
-                        <tr style="font-weight:bold;">
-                            <td style="text-align:left;">Total</td>
-                            <td style="text-align:left;padding-left: 2em"><?=$category_budgeted_value_total?></td>
-                            <td style="text-align:left;padding-left: 2em"><?=$category_actual_value_total?></td>
-                            <td style="text-align:left;color:#18bc9c;padding-left: 2em"><?=$category_budgeted_value_total - $category_actual_value_total?></td>
-                        </tr>
-                    </tfoot>
--->
                     <tbody>
-                        <?php foreach($transactions as $transaction): ?>
-                            <?php //$color = Cashbook::footerColor($category_balance = $category['budgeted_total'] - $category['actual_total']) ?>
-                            <?php $category = $transaction->category ?>
-                            <?php $category_desc = $category->desc_category; ?>
-                            <?php if ($category->getParent()) $parent_category_desc = $category->getParent()->one()->desc_category; ?> 
-                            <tr id="6" onclick="location.href=&quot;/budgeter/web/cashbook/&quot;+(this.id);" style="cursor: pointer" data-key="6">
-                                <td style="text-align:left"><span style="color:"><?= $transaction->date ?></span></td>
-                                <td style="text-align:left"><?=$transaction->description?></td>
-                                <td style="text-align:left"><?="$parent_category_desc/$category_desc"?></td>
-                                <td style="text-align:left"><?=$transaction->value?></td>
-                            </tr>
-                        <?php endforeach ?>
+<?php 
+                    foreach($transactions as $transaction) {
+                        $category = $transaction->category;
+                        $category_desc = $category->desc_category;
+                        $parent_category_desc = $category->getParent() ? $category->getParent()->one()->desc_category : NULL;
+                        echo $this->render('_transaction_row', compact('transaction', 'category_desc', 'parent_category_desc'));
+                    } 
+?>
                     </tbody>
                 </table> <!-- END TRANSACTIONS TABLE -->
             </div> <!-- w1 gridview transactions-->

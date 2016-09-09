@@ -75,9 +75,43 @@ class Category extends \yii\db\ActiveRecord
     }
     
     
-
     public function getParent()
     {
         return $this->hasOne(Category::className(), ['id_category' => 'parent_id']);
     }      
+
+    public static function topCategoryDescriptionArray()
+    {
+        $top_category_desc_array = [];
+        $top_categories = self::findBySql('SELECT id_category, desc_category from category WHERE parent_id IS NULL AND user_id=:user_id', [':user_id' => Yii::$app->user->id])->asArray()->all();
+
+        foreach($top_categories as $tp) {
+            $top_category_desc_array[$tp['id_category']] = $tp['desc_category']; 
+        }
+
+        return $top_category_desc_array;
+    }
+
+    public static function categories()
+    {
+        // this will only show parent categories that have subcategories (because of the GROUP BY clause
+        return self::findBySql('SELECT *, sum(budgeted_value) as budgeted_total, sum(actual_value) as actual_total FROM category WHERE user_id=:user_id GROUP BY parent_id HAVING parent_id IS NOT NULL', [':user_id' => Yii::$app->user->id])->asArray()->all();
+        
+    }
+
+    public static function categoryTotal($value_type)
+    {
+        $all_categories = self::find()->all();
+        return Cashbook::pageTotal($all_categories, $value_type);
+    }
+
+    public static function subCategories($parent_id)
+    {
+        return self::find()->where(['parent_id' => $parent_id])->all();
+    }
+    
+    
+    
+     
+    
 }

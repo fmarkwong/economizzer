@@ -7,6 +7,7 @@ use app\models\Cashbook;
 use app\models\Account;
 use app\models\Category;
 use app\models\CashbookSearch;
+use app\models\Transaction;
 use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -45,11 +46,26 @@ class CashbookController extends BaseController
         $searchModel->start_date = date('Y-m-01'); // get start date 
         $searchModel->end_date = date("Y-m-t");; // get end date
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $totalLeftToBudget = Account::getTotalLeftToBudget();
+        $topCategoryDescriptionArray = Category::topCategoryDescriptionArray();
+        $categories = Category::categories();
+        $categoryBudgetedValueTotal = Category::categoryTotal('budgeted_value'); 
+        $categoryActualValueTotal = Category::categoryTotal('actual_value'); 
+        $totalBudgetBalance = $categoryBudgetedValueTotal - $categoryActualValueTotal;
+        $accountBalance = Account::balance();
+        $transactions = Transaction::all();
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+        return $this->render('index', compact('searchModel', 
+            'dataProvider',
+            'totalLeftToBudget',
+            'topCategoryDescriptionArray',
+            'categories',
+            'categoryBudgetedValueTotal',
+            'categoryActualValueTotal',
+            'totalBudgetBalance',
+            'accountBalance',
+            'transactions'
+        ));
     }
     public function actionView($id)
     {

@@ -136,4 +136,12 @@ class Cashbook extends \yii\db\ActiveRecord
         if ($value == 0) $color = "#000000";
         return $color;
     }
+
+    public static function getTotalBudgetedValue()
+    {
+        return (self::findBySql('SELECT SUM(budgeted_value) as total_budgeted_value FROM cashbook WHERE user_id = :user_id', [':user_id' => Yii::$app->user->id])->asArray()->one());
+
+    }
+
+    
 }

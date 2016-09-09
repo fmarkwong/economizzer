@@ -52,4 +52,17 @@ class Account extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Transactions::className(), ['account_id' => 'id']);
     }
+
+    public static function getTotalLeftToBudget()
+    {
+        return self::findOne(['user_id' => YII::$app->user->id, 'name' => 'cash'])->to_be_budgeted;
+    }
+
+    public static function balance()
+    {
+        return self::findOne(['user_id' => YII::$app->user->id, 'name' => 'cash'])->balance;
+    }
+    
+    
+    
 }

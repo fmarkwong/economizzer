@@ -77,4 +77,10 @@ class Transaction extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Account::className(), ['id' => 'account_id']);
     }
+
+    public static function all()
+    {
+        return self::findAll(['user_id' => YII::$app->user->id]);
+    }
+    
 }
