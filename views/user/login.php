@@ -27,7 +27,7 @@ use yii\widgets\ActiveForm;
 
 			<?php ActiveForm::end(); ?>
 
-		    <?php if (Yii::$app->get("authClientCollection", false) && false): //TODO: ?>
+		    <?php if (Yii::$app->get("authClientCollection", false) && true): //TODO: ?>
 			<!-- <div class="col-lg-offset-2"> -->
 		            <?= yii\authclient\widgets\AuthChoice::widget([
 		                'baseAuthUrl' => ['/user/auth/login'],

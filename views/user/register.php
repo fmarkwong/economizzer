@@ -61,7 +61,7 @@ $this->title = Yii::t('app', 'Register');
 
         <?php ActiveForm::end(); ?>
 
-        <?php if (Yii::$app->get("authClientCollection", false) && false): //TODO: ?>
+        <?php if (Yii::$app->get("authClientCollection", false) && true): //TODO: ?>
             <br/>
             <div class="row">
                 <div class="col-lg-offset-2 col-sm-3">
