@@ -94,7 +94,7 @@ class DashboardController extends Controller
         $thisyear  = date('Y');
         $thismonth = date('m');
         $lastmonth = date('m', strtotime('-1 months', strtotime(date('Y-m-d'))));        
-        $user    = Yii::$app->user->identity->id;        
+        $user      = Yii::$app->user->identity->id;        
 
         $command = Yii::$app->db->createCommand("SELECT sum(value) FROM cashbook WHERE user_id = $user AND type_id = 1 AND MONTH(date) = $thismonth AND YEAR(date) = $thisyear");
         $vtype1 = $command->queryScalar();

@@ -19,6 +19,11 @@ use yii\base\Security;
 
 class CashbookController extends BaseController
 {
+
+    const MONTH = [ 1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
+        7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
+    ];
+
     public function behaviors()
     {
         return [
@@ -42,29 +47,25 @@ class CashbookController extends BaseController
     }
     public function actionIndex()
     {
-        $searchModel = new CashbookSearch();
-        $searchModel->start_date = date('Y-m-01'); // get start date 
-        $searchModel->end_date = date("Y-m-t");; // get end date
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $totalLeftToBudget = Account::getTotalLeftToBudget();
-        $topCategoryDescriptionArray = Category::topCategoryDescriptionArray();
-        $categories = Category::categories();
-        $categoryBudgetedValueTotal = Category::categoryTotal('budgeted_value'); 
-        $categoryActualValueTotal = Category::categoryTotal('actual_value'); 
-        $totalBudgetBalance = $categoryBudgetedValueTotal - $categoryActualValueTotal;
-        $accountBalance = Account::balance();
-        $transactions = Transaction::all();
+        $session = Yii::$app->session;
+        if (!$session->has('monthIndex')) $session['monthIndex'] = (int)date('m');
+        if (!$session->has('year')) $session['year'] = date('Y');
 
-        return $this->render('index', compact('searchModel', 
-            'dataProvider',
+        $month = self::MONTH[$session['monthIndex']];
+        $year  = $session['year'];
+
+        $totalLeftToBudget = Account::getTotalLeftToBudget();
+        $categories = Category::categories();
+        $accountBalance = Account::balance();
+        $transactions = Transaction::getCurrent();
+
+        return $this->render('index', compact(
             'totalLeftToBudget',
-            'topCategoryDescriptionArray',
             'categories',
-            'categoryBudgetedValueTotal',
-            'categoryActualValueTotal',
-            'totalBudgetBalance',
             'accountBalance',
-            'transactions'
+            'transactions',
+            'month',
+            'year'
         ));
     }
     public function actionView($id)
@@ -169,6 +170,34 @@ class CashbookController extends BaseController
         return $this->render('target', [
                 'model' => $cash_book,
             ]);
+    }
+
+    public function actionPreviousMonth()
+    {
+        $session = Yii::$app->session;
+
+        if ($session['monthIndex'] === 1)  {
+            $session['monthIndex'] = 12;
+            $session['year'] = $session['year'] - 1;
+        } else {
+            $session['monthIndex'] = $session['monthIndex'] - 1;
+        }
+        return $this->redirect(['index']);
+    }
+    
+
+
+    public function actionNextMonth()
+    {
+        $session = Yii::$app->session;
+
+        if ($session['monthIndex'] === 12)  {
+            $session['monthIndex'] = 1;
+            $session['year'] = $session['year'] + 1;
+        } else {
+            $session['monthIndex'] = $session['monthIndex'] + 1;
+        }
+        return $this->redirect(['index']);
     }
 
     protected function getCashBook($id)

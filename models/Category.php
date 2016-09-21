@@ -14,7 +14,7 @@ class Category extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['budgeted_value', 'actual_value'], 'number'],
+            [['budgeted_total', 'actual_total'], 'number'],
             [['desc_category', 'is_active'], 'required'],
             [['is_active','user_id','parent_id'], 'integer'],
             [['desc_category', 'hexcolor_category'], 'string', 'max' => 45]
@@ -25,9 +25,8 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             'id_category' => Yii::t('app', 'ID'),
-            'budgeted_value' => Yii::t('app', 'Budgeted Value'),
-            'budgeted_total' => Yii::t('app', 'Budgeted Total'),
-            'actual_value' => Yii::t('app', 'Actual Value'),
+            'budgeted_total' => Yii::t('app', 'Total Budgeted Value'),
+            'actual_total' => Yii::t('app', 'Total Acutal Total'),
             'desc_category' => Yii::t('app', 'Description'),
             'hexcolor_category' => Yii::t('app', 'Color'),
             'parent_id' => Yii::t('app', 'Parent Category'),
@@ -80,23 +79,21 @@ class Category extends \yii\db\ActiveRecord
         return $this->hasOne(Category::className(), ['id_category' => 'parent_id']);
     }      
 
-    public static function topCategoryDescriptionArray()
-    {
-        $top_category_desc_array = [];
-        $top_categories = self::findBySql('SELECT id_category, desc_category from category WHERE parent_id IS NULL AND user_id=:user_id', [':user_id' => Yii::$app->user->id])->asArray()->all();
-
-        foreach($top_categories as $tp) {
-            $top_category_desc_array[$tp['id_category']] = $tp['desc_category']; 
-        }
-
-        return $top_category_desc_array;
-    }
-
     public static function categories()
     {
-        // this will only show parent categories that have subcategories (because of the GROUP BY clause
-        return self::findBySql('SELECT *, sum(budgeted_value) as budgeted_total, sum(actual_value) as actual_total FROM category WHERE user_id=:user_id GROUP BY parent_id HAVING parent_id IS NOT NULL', [':user_id' => Yii::$app->user->id])->asArray()->all();
-        
+        $session = Yii::$app->session;
+        $month = $session['monthIndex'];
+        $year  = $session['year'];
+        $sql = <<<SQL
+        SELECT *, p.budgeted_total, p.actual_total
+        FROM 
+            (SELECT * FROM category WHERE user_id = :user_id AND parent_id IS NULL) AS c 
+        LEFT JOIN 
+            (SELECT parent_id, SUM(b.budgeted_value) AS budgeted_total, SUM(b.actual_value) AS actual_total
+             FROM category AS c LEFT JOIN budget AS b ON c.id_category = b.category_id  WHERE c.user_id=:user_id AND MONTH(b.date) = :month AND YEAR(b.date) = :year GROUP BY c.parent_id HAVING c.parent_id IS NOT NULL) AS p
+        ON c.id_category = p.parent_id
+SQL;
+        return self::findBySql($sql, [':user_id' => Yii::$app->user->id, ':month' => $month, ':year' => $year])->asArray()->all();
     }
 
     public static function categoryTotal($value_type)
@@ -109,6 +106,38 @@ class Category extends \yii\db\ActiveRecord
     {
         return self::find()->where(['parent_id' => $parent_id])->all();
     }
+
+    public static function getBudgets()
+    {
+        return $this->hasMany(Budget::className(), ['category_id' => 'id_category']);
+    }
+
+    public function getBudget($month, $year)
+    {
+        return Budget::findBySql('SELECT * FROM budget AS b WHERE category_id = :category_id AND MONTH(b.date) = :month AND YEAR(b.date) = :year', ['category_id' => $this->id_category, ':month' => $month, ':year' => $year])->one(); 
+    }
+
+    public function getCurrentBudget()
+    {
+        $session = Yii::$app->session;
+        $month = $session['monthIndex'];
+        $year  = $session['year'];
+        return $this->getBudget($month, $year);
+    }
+
+    public function nullBudget($date = NULL)
+    {
+        $nullBudget = new Budget;
+        $nullBudget->budgeted_value = 0;
+        $nullBudget->actual_value = 0;
+        $nullBudget->date = $date ? $date : date('Y-m-d'); 
+        $nullBudget->category_id = $this->id_category;
+
+        return $nullBudget;
+    }
+    
+    
+     
     
     
     

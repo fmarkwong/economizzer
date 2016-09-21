@@ -82,5 +82,15 @@ class Transaction extends \yii\db\ActiveRecord
     {
         return self::findAll(['user_id' => YII::$app->user->id]);
     }
+
+    public static function getCurrent()
+    {
+        $session = Yii::$app->session;
+        $month = $session['monthIndex'];
+        $year  = $session['year'];
+        
+        return self::findBySql('SELECT * FROM transaction WHERE user_id = :user_id AND MONTH(date) = :month AND YEAR(date) = :year', [':user_id' => Yii::$app->user->id, ':month' => $month, ':year' => $year])->all();
+    }
+    
     
 }

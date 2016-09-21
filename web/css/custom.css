@@ -2,7 +2,25 @@
  * Licensed under MIT
  * Based on Bootstrap 
 */
-.navbar-default {
-    background-color: #2c3e50;
-    border-color: transparent;
+/* .navbar-default { */
+/*     background-color: #2c3e50; */
+/*     border-color: transparent; */
+/* } */
+
+/* cashbook/index  */
+
+div.month-picker {
+  margin-top: 15px;
+}
+
+.month-picker a {
+  float: left;
+  font-size: 19px;
+  color: #337ab7;
+  padding-top: 9px
+}
+
+.month-picker h2 {
+  float: left;
+  padding: 0 15px;
 }

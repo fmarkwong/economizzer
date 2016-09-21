@@ -11,7 +11,15 @@ class TransactionController extends BaseController
     public function actionNew()
     {
         $transaction = new Transaction;
-        $transaction->date = date('Y-m-d');
+        $session = Yii::$app->session;
+
+        if ($session->has('monthIndex') && $session->has('year')) {
+            $date = "{$session['year']}-{$session['monthIndex']}-01";
+        } else {
+            $date = date('Y-m-d');
+        }
+
+        $transaction->date = $date; 
         return $this->render('new', [
             'transaction' => $transaction,
         ]);
@@ -21,31 +29,28 @@ class TransactionController extends BaseController
     {
         $transaction = new Transaction;
         $transaction->user_id = Yii::$app->user->id;
+        // default to cash account for now
         $transaction->account_id = \app\models\Account::findOne(['name' => 'cash', 'user_id' => YII::$app->user->id])->id;
         $transaction->load(Yii::$app->request->post());
 
+        $date = new \DateTime($transaction->date);
+        $month = (int)$date->format('m');
+        $year = $date->format('Y');
+        $currentBudget = $transaction->category->getBudget($month, $year);
+        $currentBudget = $currentBudget ? $currentBudget : $transaction->category->nullBudget($transaction->date);
+
         if ($transaction->category->type->desc_type === 'Revenue') {
-            // error_log('Revenue');
-            // error_log("account balance: " . $transaction->account->balance);
-            // error_log("transaction value: " . $transaction->value);
             $transaction->account->balance += $transaction->value;
             $transaction->account->to_be_budgeted += $transaction->value;
         } elseif ($transaction->category->type->desc_type === 'Expense') {
-            // error_log('Expense');
-            // error_log("account balance:" . $transaction->account->balance);
-            // error_log("transaction value:" . $transaction->value);
             $transaction->account->balance -= $transaction->value;
-            $current_actual_value = Category::findOne(['id_category' => $transaction->category->id_category,
-                                                        'user_id'    => Yii::$app->user->id,
-                                    ])->actual_value;
-            $transaction->category->actual_value = $current_actual_value + (float)$transaction->value;
+            $currentBudget->actual_value += (float)$transaction->value;
         } else {
             throw new Exception("Category Type Error");
         }
 
         $transaction->account->save();
-
-        $transaction->category->save();
+        $currentBudget->save();
 
         if ($transaction->save()) {
             Yii::$app->session->setFlash("transaction-success", Yii::t("app", "Transaction added"));

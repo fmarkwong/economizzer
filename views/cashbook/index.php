@@ -9,25 +9,16 @@ use app\helpers\ViewHelper;
 $this->title = Yii::t('app', 'Budget');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="row">
-    <div class="col-sm-3">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingOne">
-                  <strong><?php echo Yii::t('app', 'Filters');?>
-                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFilter" aria-expanded="true" aria-controls="collapseFilter">
-                      <span class="glyphicon glyphicon-resize-small pull-right" aria-hidden="true"></span>
-                    </a>
-                  </strong>
-                </div>
-                <div id="collapseFilter" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                    <div class="panel-body">
-                        <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="col-sm-4 col-sm-offset-4 month-picker">
+        <?= Html::a(null, ['/cashbook/previous-month'], ['class' => 'glyphicon glyphicon-circle-arrow-left']) ?>
+        <h2 class="month-picker"><?= "$month $year"?></h2>
+        <?= Html::a(null, ['/cashbook/next-month'], ['class' => 'glyphicon glyphicon-circle-arrow-right']) ?>
     </div>
+</div> <!-- row -->
+
+<div class="row">
     <div class="col-sm-12">
 
         <div class="cashbook-index">
@@ -35,18 +26,13 @@ $this->params['breadcrumbs'][] = $this->title;
               <span><?= Html::encode($this->title) ?></span>
               <?php $color = CashBookHelper::balanceColor($totalLeftToBudget) ?>
               <span style="color: <?=$color?>; font-size: 20px; vertical-align: middle"> Left to budget: <?= $totalLeftToBudget?></span>
-                <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/cashbook/create'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
+                <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/budget/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
             </h2>
             <hr>
 
             <?php ViewHelper::displayAllFlashes() ?>
 
     <!-- BUDGET TABLE -->
-            <?php
-
-                $color = cashBookHelper::balanceColor($totalBudgetBalance);
-            ?>
-
             <div id="w1" class="grid-view">
                 <table class="table table-striped table-hover">
                     <thead>
@@ -60,15 +46,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     <tbody>
 <?php 
                     foreach($categories as $category) {
-                        $parent_category = $topCategoryDescriptionArray[$category['parent_id']];
-                        $sub_categories = app\models\Category::subCategories($category['parent_id']); 
+                        $parent_category = $category['desc_category']; 
+                        $sub_categories = app\models\Category::subCategories($category['id_category']); 
                         if ($parent_category === 'Income') continue;
                         $left_to_budget_color = cashBookHelper::balanceColor($category_balance = $category['budgeted_total'] - $category['actual_total']);
                         echo $this->render('_parent_category_row', compact('parent_category', 'category', 'left_to_budget_color', 'category_balance'));
 
-                        foreach($sub_categories as $sub_category) {
-                            $sub_category_balance_color = cashBookHelper::balanceColor($sub_category_balance = $sub_category->budgeted_value - $sub_category->actual_value);
-                            echo $this->render('_sub_category_row', compact('sub_category_balance_color', 'sub_category', 'sub_category_balance'));
+                        foreach($sub_categories as $subCategory) {
+                            $currentBudget = $subCategory->getCurrentBudget();
+                            $budgetedValue = $currentBudget ? $currentBudget->budgeted_value : 0;
+                            $actualValue   = $currentBudget ? $currentBudget->actual_value : 0;
+                            $subCategoryBalance = $budgetedValue - $actualValue;
+                            $subCategoryBalanceColor = cashBookHelper::balanceColor($subCategoryBalance);
+                            echo $this->render('_sub_category_row', compact('subCategory', 'subCategoryBalance', 'subCategoryBalanceColor', 'actualValue', 'budgetedValue'));
                         }
                     } 
 ?>

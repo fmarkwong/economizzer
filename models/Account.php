@@ -62,6 +62,13 @@ class Account extends \yii\db\ActiveRecord
     {
         return self::findOne(['user_id' => YII::$app->user->id, 'name' => 'cash'])->balance;
     }
+
+    public static function currentAccount()
+    {
+        return self::findOne(['user_id' => YII::$app->user->id, 'name' => 'cash']);
+
+    }
+    
     
     
     
