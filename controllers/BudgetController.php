@@ -50,9 +50,12 @@ class BudgetController extends \yii\web\Controller
     public function newBudget()
     {
         $session = Yii::$app->session;
-
         if ($session->has('monthIndex') && $session->has('year')) {
-            $date = "{$session['year']}-{$session['monthIndex']}-01";
+            if ($session['monthIndex'] === (int)date('m') && $session['year'] === date('Y')) {
+                $date = date('Y-m-d');
+            } else { 
+                $date = "{$session['year']}-{$session['monthIndex']}-01";
+            }
         } else {
             $date = date('Y-m-d');
         }
