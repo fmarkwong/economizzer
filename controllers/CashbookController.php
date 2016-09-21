@@ -20,7 +20,7 @@ use yii\base\Security;
 class CashbookController extends BaseController
 {
 
-    const MONTH = [ 1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
+    public static $month = [ 1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
         7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
     ];
 
@@ -51,7 +51,7 @@ class CashbookController extends BaseController
         if (!$session->has('monthIndex')) $session['monthIndex'] = (int)date('m');
         if (!$session->has('year')) $session['year'] = date('Y');
 
-        $month = self::MONTH[$session['monthIndex']];
+        $month = self::$month[$session['monthIndex']];
         $year  = $session['year'];
 
         $totalLeftToBudget = Account::getTotalLeftToBudget();
