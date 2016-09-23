@@ -4,6 +4,7 @@ namespace app\controllers;
 use amnah\yii2\user\controllers\AuthController as BaseAuthController;
 use amnah\yii2\user\models\UserAuth;
 use app\models\UserKeychain;
+use app\models\Category;
 use yii\helpers\Url;
 use yii\web\UnauthorizedHttpException;
 use Yii;
@@ -77,7 +78,7 @@ class AuthController extends BaseAuthController{
         $profile->setUser($user->id)->save(false);
         $userAuth->setUser($user->id)->save(false);
 
-        $this->addDefaultCategories($user->id);
+        Category::addDefaultCategories($user->id);
         // log user in
         Yii::$app->user->login($user, Yii::$app->getModule("user")->loginDuration);
     }
@@ -139,46 +140,4 @@ class AuthController extends BaseAuthController{
         }
         $this->goBack();
     }
-
-    private function addDefaultCategories($userId)
-    {
-        $categories = ['Immediate Obligations' => 
-                            ['type' => 2,
-                            'sub_categories' => ['Rent/Mortgage', 'Groceries', 'Electric', 'Water', 'Phone', 'Transportation', 'Interest & Fees']
-                            ],
-                          'True Expenses' =>
-                            ['type' => 2,
-                            'sub_categories' => ['Auto Maintenance', 'Home Maintenance', 'Insurance', 'Medical', 'Clothing', 'Gifts', 'Giving', 'Stuff I forgot to budget for'],
-                            ],
-                          'Other' => 
-                            ['type' => 2,
-                            'sub_categories' => []
-                            ],
-                          'Income' =>
-                            ['type' => 1,
-                            'sub_categories' => ['All income']
-                            ],
-                      ];          
-
-        (new \app\models\Account(['user_id' => $userId, 'name' => 'cash']))->save();
-
-        foreach($categories as $parent_category => $value) {
-            $new_parent_category = new \app\models\Category;
-            $new_parent_category->desc_category = $parent_category; 
-            $new_parent_category->is_active = 1;
-            $new_parent_category->user_id = $userId;
-            $new_parent_category->type_id = $value['type'];
-            $new_parent_category->save();
-            foreach($value['sub_categories'] as $sub_category) {
-                $new_sub_category = new \app\models\Category;
-                $new_sub_category->desc_category = $sub_category; 
-                $new_sub_category->parent_id = $new_parent_category->id_category; 
-                $new_sub_category->is_active = 1;
-                $new_sub_category->user_id = $userId;
-                $new_sub_category->type_id = $value['type'];
-                $new_sub_category->save();
-            }
-        }
-    }
-    
 }

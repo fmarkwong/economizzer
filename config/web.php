@@ -49,7 +49,7 @@ $config = [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-            'useFileTransport' => true,
+            'useFileTransport' => false,
             'messageConfig' => [
                 'from' => ['master@economizzer.com' => 'Admin'],
                 'charset' => 'UTF-8',

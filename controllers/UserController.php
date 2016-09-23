@@ -5,6 +5,7 @@ namespace app\controllers;
 use amnah\yii2\user\controllers\DefaultController as BaseUserController;
 use Yii;
 use app\models\UserKeychain;
+use app\models\Category;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
@@ -22,6 +23,38 @@ class UserController extends BaseUserController{
 
     public function actionAuth(){
         return "wrong!";
+    }
+
+    /**
+     * Confirm email
+     */
+    public function actionConfirm($key)
+    {
+        /** @var \amnah\yii2\user\models\UserKey $userKey */
+        /** @var \amnah\yii2\user\models\User $user */
+
+        // search for userKey
+        $success = false;
+        $userKey = Yii::$app->getModule("user")->model("UserKey");
+        $userKey = $userKey::findActiveByKey($key, [$userKey::TYPE_EMAIL_ACTIVATE, $userKey::TYPE_EMAIL_CHANGE]);
+        if ($userKey) {
+
+            // confirm user
+            $user = Yii::$app->getModule("user")->model("User");
+            $user = $user::findOne($userKey->user_id);
+            $user->confirm();
+
+            // consume userKey and set success
+            $userKey->consume();
+            $success = $user->email;
+            Category::addDefaultCategories($user->id);
+        }
+
+        // render
+        return $this->render("confirm", [
+            "userKey" => $userKey,
+            "success" => $success
+        ]);
     }
 
     public function actionAccount()
