@@ -23,10 +23,63 @@ class AuthController extends BaseAuthController{
             ],
             'login' => [
                 'class' => 'yii\authclient\AuthAction',
-                'successCallback' => [$this, 'loginRegisterCallback'],
+                // 'successCallback' => [$this, 'loginRegisterCallback'],
+                'successCallback' => [$this, 'loginCallBack'],
                 'successUrl' => Url::base(),
             ],
         ];
+    }
+
+    // taken from vendor/amnah/yii2-user/controllers/AuthController->loginRegisterCallbac
+    public function loginCallBack($client)
+    {
+        // uncomment this to see which attributes you get back
+        //echo "<pre>";print_r($client->getUserAttributes());echo "</pre>";exit;
+        // check if user is already logged in. if so, do nothing
+        if (!Yii::$app->user->isGuest) {
+            return;
+        }
+
+        // attempt to log in as an existing user
+        if ($this->attemptLogin($client)) {
+            return;
+        }
+
+         // register a new user
+        $userAuth = $this->initUserAuth($client);
+        $this->registerAndLoginUser($client, $userAuth);
+    }
+    
+    /**
+     * Register a new user using client attributes and then associate userAuth
+     *
+     * @param \yii\authclient\BaseClient $client
+     * @param \amnah\yii2\user\models\UserAuth $userAuth
+     */
+    protected function registerAndLoginUser($client, $userAuth)
+    {
+        /** @var \amnah\yii2\user\models\User    $user */
+        /** @var \amnah\yii2\user\models\Profile $profile */
+        /** @var \amnah\yii2\user\models\Role    $role */
+        $role = Yii::$app->getModule("user")->model("Role");
+
+        // set user and profile info
+        $attributes = $client->getUserAttributes();
+        $function = "setInfo" . ucfirst($client->name); // "setInfoFacebook()"
+        list ($user, $profile) = $this->$function($attributes);
+
+        // calculate and double check username (in case it is already taken)
+        $fallbackUsername = "{$client->name}_{$userAuth->provider_id}";
+        $user = $this->doubleCheckUsername($user, $fallbackUsername);
+
+        // save new models
+        $user->setRegisterAttributes($role::ROLE_USER, Yii::$app->request->userIP, $user::STATUS_ACTIVE)->save(false);
+        $profile->setUser($user->id)->save(false);
+        $userAuth->setUser($user->id)->save(false);
+
+        $this->addDefaultCategories($user->id);
+        // log user in
+        Yii::$app->user->login($user, Yii::$app->getModule("user")->loginDuration);
     }
 
     /**
@@ -86,4 +139,46 @@ class AuthController extends BaseAuthController{
         }
         $this->goBack();
     }
+
+    private function addDefaultCategories($userId)
+    {
+        $categories = ['Immediate Obligations' => 
+                            ['type' => 2,
+                            'sub_categories' => ['Rent/Mortgage', 'Groceries', 'Electric', 'Water', 'Phone', 'Transportation', 'Interest & Fees']
+                            ],
+                          'True Expenses' =>
+                            ['type' => 2,
+                            'sub_categories' => ['Auto Maintenance', 'Home Maintenance', 'Insurance', 'Medical', 'Clothing', 'Gifts', 'Giving', 'Stuff I forgot to budget for'],
+                            ],
+                          'Other' => 
+                            ['type' => 2,
+                            'sub_categories' => []
+                            ],
+                          'Income' =>
+                            ['type' => 1,
+                            'sub_categories' => ['All income']
+                            ],
+                      ];          
+
+        (new \app\models\Account(['user_id' => $userId, 'name' => 'cash']))->save();
+
+        foreach($categories as $parent_category => $value) {
+            $new_parent_category = new \app\models\Category;
+            $new_parent_category->desc_category = $parent_category; 
+            $new_parent_category->is_active = 1;
+            $new_parent_category->user_id = $userId;
+            $new_parent_category->type_id = $value['type'];
+            $new_parent_category->save();
+            foreach($value['sub_categories'] as $sub_category) {
+                $new_sub_category = new \app\models\Category;
+                $new_sub_category->desc_category = $sub_category; 
+                $new_sub_category->parent_id = $new_parent_category->id_category; 
+                $new_sub_category->is_active = 1;
+                $new_sub_category->user_id = $userId;
+                $new_sub_category->type_id = $value['type'];
+                $new_sub_category->save();
+            }
+        }
+    }
+    
 }
