@@ -17,8 +17,8 @@ class m160909_183657_create_budget_table extends Migration
     {
         $this->createTable('budget', [
             'id' => $this->primaryKey(),
-            'budgeted_value' => $this->float(),
-            'actual_value' => $this->float(),
+            'budgeted_value' => $this->float()->defaultValue(0),
+            'actual_value' => $this->float()->defaultValue(0),
             'date' => $this->date(),
             'category_id' => $this->integer(),
         ]);

@@ -29,7 +29,7 @@ class Budget extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['budgeted_value', 'actual_value'], 'number'],
+            [['budgeted_value', 'actual_value', 'savings_goal', 'debt_goal'], 'number'],
             [['date'], 'safe'],
             [['category_id'], 'integer'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id_category']],
@@ -46,7 +46,7 @@ class Budget extends \yii\db\ActiveRecord
             'budgeted_value' => Yii::t('app', 'Budgeted Value'),
             'actual_value' => Yii::t('app', 'Actual Value'),
             'date' => Yii::t('app', 'Date'),
-            'category_id' => Yii::t('app', 'Category ID'),
+            'category_id' => Yii::t('app', 'Category'),
         ];
     }
 
@@ -54,6 +54,11 @@ class Budget extends \yii\db\ActiveRecord
     {
         $this->budgeted_value += $value;
         return $this;
+    }
+
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id_category' => 'category_id']);
     }
     
 }

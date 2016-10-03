@@ -55,13 +55,15 @@ class CashbookController extends BaseController
         $year  = $session['year'];
 
         $totalLeftToBudget = Account::getTotalLeftToBudget();
-        $categories = Category::categories();
+        $categories = Category::categories(null, ['Savings', 'Income']);
+        $savingsCategory = Category::categories(['Savings']);
         $accountBalance = Account::balance();
         $transactions = Transaction::getCurrent();
 
         return $this->render('index', compact(
             'totalLeftToBudget',
             'categories',
+            'savingsCategory',
             'accountBalance',
             'transactions',
             'month',

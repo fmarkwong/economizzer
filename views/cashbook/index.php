@@ -19,9 +19,9 @@ $this->params['breadcrumbs'][] = $this->title;
 </div> <!-- row -->
 
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-16">
 
-        <div class="cashbook-index">
+        <div class="cashbook-index"> <!-- BUDGETS SECTION -->
             <h2>
               <span><?= Html::encode($this->title) ?></span>
               <?php $color = CashBookHelper::balanceColor($totalLeftToBudget) ?>
@@ -32,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?php ViewHelper::displayAllFlashes() ?>
 
-    <!-- BUDGET TABLE -->
             <div id="w1" class="grid-view">
                 <table class="table table-striped table-hover">
                     <thead>
@@ -48,24 +47,70 @@ $this->params['breadcrumbs'][] = $this->title;
                     foreach($categories as $category) {
                         $parent_category = $category['desc_category']; 
                         $sub_categories = app\models\Category::subCategories($category['id_category']); 
-                        if ($parent_category === 'Income') continue;
                         $left_to_budget_color = cashBookHelper::balanceColor($category_balance = $category['budgeted_total'] - $category['actual_total']);
                         echo $this->render('_parent_category_row', compact('parent_category', 'category', 'left_to_budget_color', 'category_balance'));
 
                         foreach($sub_categories as $subCategory) {
+                            $categoryId    = $subCategory->id_category;
                             $currentBudget = $subCategory->getCurrentBudget();
+                            $budgetId      = $currentBudget ? $currentBudget->id: null;
+                            $transactionId = $currentBudget ? $currentBudget->transaction_id : null;
                             $budgetedValue = $currentBudget ? $currentBudget->budgeted_value : 0;
                             $actualValue   = $currentBudget ? $currentBudget->actual_value : 0;
                             $subCategoryBalance = $budgetedValue - $actualValue;
                             $subCategoryBalanceColor = cashBookHelper::balanceColor($subCategoryBalance);
-                            echo $this->render('_sub_category_row', compact('subCategory', 'subCategoryBalance', 'subCategoryBalanceColor', 'actualValue', 'budgetedValue'));
+                            echo $this->render('_sub_category_row', compact('subCategory', 'subCategoryBalance', 'subCategoryBalanceColor', 'actualValue', 'budgetedValue', 'budgetId', 'categoryId', 'transactionId'));
                         }
                     } 
 ?>
                     </tbody>
-                </table> <!-- END BUDGET TABLE -->
+                </table> 
             </div> <!-- w1 gridview-->
-        </div><!-- cashbook index Budget-->
+        </div><!-- BUDGETS SECTION END -->
+        <br>
+        <?php if ($savingsCategory): ?>
+                <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/budget/new-savings'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
+        <div class="cashbook-index"> <!-- SAVING GOALS SECTION -->
+            <div id="w1" class="grid-view">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th><a href="/budgeter/web/cashbook/index?sort=parent_category_id" data-sort="parent_category_id">Category</a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=budgeted_value" data-sort="budgeted_value">Budgeted Value</a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Actual Value</a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Balance</a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Total Goal</a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Percentage Completed</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+<?php 
+                    foreach($savingsCategory as $category) {
+                        $parent_category = $category['desc_category']; 
+                        $sub_categories = app\models\Category::subCategories($category['id_category']); 
+                        $totalSavingsGoal = $category['savings_goal_total'];
+                        $left_to_budget_color = cashBookHelper::balanceColor($category_balance = $category['budgeted_total'] - $category['actual_total']);
+                        echo $this->render('_savings_parent_category_row', compact('parent_category', 'category', 'left_to_budget_color', 'category_balance', 'totalSavingsGoal'));
+
+                        foreach($sub_categories as $subCategory) {
+                            $categoryId    = $subCategory->id_category;
+                            $currentBudget = $subCategory->getCurrentBudget();
+                            $budgetId      = $currentBudget ? $currentBudget->id: 0;
+                            $budgetedValue = $currentBudget ? $currentBudget->budgeted_value : 0;
+                            $actualValue   = $currentBudget ? $currentBudget->actual_value : 0;
+                            $subCategoryBalance = $budgetedValue - $actualValue;
+                            $subCategoryBalanceColor = cashBookHelper::balanceColor($subCategoryBalance);
+                            $totalGoal = $currentBudget ? $currentBudget->savings_goal : 0;
+                            $percentageCompleted = $currentBudget ? ($actualValue / $totalGoal) * 100 : 0;
+                            echo $this->render('_savings_sub_category_row', compact('subCategory', 'subCategoryBalance', 'subCategoryBalanceColor', 'actualValue', 'budgetedValue', 'totalGoal', 'percentageCompleted', 'categoryId', 'budgetId'));
+                        }
+                    } 
+?>
+                    </tbody>
+                </table> 
+            </div> <!-- w1 gridview-->
+        </div><!-- SAVING GOALS SECTION END -->
+        <?php endif ?>
         <br>
         <div class="cashbook-index">  <!-- TRANSACTIONS -->
             <h2>

@@ -11,8 +11,7 @@ class m160320_200425_initial extends Migration
 
     public function down()
     {
-        echo "m160320_200425_initial cannot be reverted.\n";
-        return false;
+        //leave blank because the sql file already drops existing tables
     }
 
 }

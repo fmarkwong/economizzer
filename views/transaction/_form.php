@@ -12,7 +12,7 @@ use kartik\widgets\DatePicker;
 
 <div class="col-md-8">
     <?php $form = ActiveForm::begin([
-        'action' => 'create',
+        'action' => $action,
         'id' => 'transactionform',
         'options' => [
             'enctype'=>'multipart/form-data',
@@ -39,6 +39,8 @@ use kartik\widgets\DatePicker;
         echo $form->field($transaction, 'type_id')->hiddenInput(['value' => '2'])->label(false);
         ?>
 
+        <?php if (!$transaction->isNewRecord) echo Html::hiddenInput('transaction_id', $transaction->id) ?>
+
         <?php
             echo DatePicker::widget([
                 'model' => $transaction,
@@ -56,12 +58,15 @@ use kartik\widgets\DatePicker;
         
         <?php // echo $form->field($transaction, 'category_id')->dropDownList(ArrayHelper::map(Category::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_active' => 1])->orderBy("desc_category ASC")->all(), 'id_category', 'desc_category'),['prompt'=>Yii::t('app','Select')])  ?>
 
-        <?=
-        $form->field($transaction, 'category_id', [
-            'inputOptions' => [
-                'class' => 'selectpicker '
-            ]
-        ])->dropDownList(app\models\Category::getHierarchy(), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
+    <?php if ($transaction->isNewRecord) echo $form->field($transaction, 'category_id')->hiddenInput(['value' => $transaction->category_id])->label(false) ?> 
+        <?php
+        if ($showCategoryField) {
+            echo $form->field($transaction, 'category_id', [
+                'inputOptions' => [
+                    'class' => 'selectpicker '
+                ]
+            ])->dropDownList(app\models\Category::getHierarchy(), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
+        }
         ?>
 
         <?= $form->field($transaction, 'value')->textInput(['size' => 10]) ?>

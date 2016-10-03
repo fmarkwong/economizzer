@@ -11,6 +11,6 @@ class m160816_200642_alter_column_value_in_cashbook_table extends Migration
 
     public function down()
     {
-        $this->alterColumn('cashbook', 'value', $this->flaot(), 'NOT NULL');
+        $this->alterColumn('cashbook', 'value', $this->float(), 'NOT NULL');
     }
 }

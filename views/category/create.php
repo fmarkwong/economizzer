@@ -11,8 +11,11 @@ $this->title = Yii::t('app', 'Create category', [
     <h2><?= Html::encode($this->title) ?></h2>
     <hr/>
 
+    <?php $model->parent_or_sub = 'parent'; //default value ?>
+    <?php $model->parent_id = null; //default value ?>
     <?= $this->render('_form', [
         'model' => $model,
+        'js'    => null,
     ]) ?>
 
 </div>

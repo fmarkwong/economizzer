@@ -56,7 +56,7 @@ class Transaction extends \yii\db\ActiveRecord
             'date' => Yii::t('app', 'Date'),
             'category_id' => Yii::t('app', 'Category'),
             'income' => Yii::t('app', 'Income'),
-            'value' => Yii::t('app', 'Value'),
+            'value' => Yii::t('app', 'Actual Value'),
             'expense' => Yii::t('app', 'Expense'),
             'balance' => Yii::t('app', 'Balance'),
         ];

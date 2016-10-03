@@ -10,7 +10,7 @@ class TransactionController extends BaseController
 {
     public function actionNew()
     {
-        $transaction = new Transaction;
+        $categoryId  = Yii::$app->request->get()['category_id'];
         $session = Yii::$app->session;
 
         if ($session->has('monthIndex') && $session->has('year')) {
@@ -23,15 +23,34 @@ class TransactionController extends BaseController
             $date = date('Y-m-d');
         }
 
+        $transaction = new Transaction;
+        $transaction->category_id = $categoryId;
         $transaction->date = $date; 
         return $this->render('new', [
             'transaction' => $transaction,
+            'title' => $transaction->category->desc_category,
+            'action' => 'create', 
+            'showCategoryField' => false
         ]);
     }
 
-    public function actionCreate()
+    public function actionUpdateActualValueForm()
     {
-        $transaction = new Transaction;
+        $id = Yii::$app->request->get()['id'];
+        $transaction = Transaction::findOne($id); 
+
+        return $this->render('update', [
+            'title' => $transaction->category->desc_category, 
+            'transaction' => $transaction,
+            'showCategoryField' => false,
+            'action' => 'update'
+        ]);
+    }
+    
+
+    public function actionCreate($transaction = null)
+    {
+        $transaction = $transaction ? $transaction : new Transaction;
         $transaction->user_id = Yii::$app->user->id;
         // default to cash account for now
         $transaction->account_id = \app\models\Account::findOne(['name' => 'cash', 'user_id' => YII::$app->user->id])->id;
@@ -53,10 +72,10 @@ class TransactionController extends BaseController
             throw new Exception("Category Type Error");
         }
 
-        $transaction->account->save();
-        $currentBudget->save();
-
         if ($transaction->save()) {
+            $transaction->account->save();
+            $currentBudget->transaction_id = $transaction->id;
+            $currentBudget->save();
             Yii::$app->session->setFlash("transaction-success", Yii::t("app", "Transaction added"));
         } else {
             Yii::$app->session->setFlash("transaction-error", Yii::t("app", "Transaction error"));
@@ -64,6 +83,13 @@ class TransactionController extends BaseController
         return $this->redirect(['cashbook/index']);
 
     }
+
+    public function actionUpdate()
+    {
+        $transaction = Transaction::findOne(Yii::$app->request->post()['transaction_id']);
+        return $this->actionCreate($transaction); 
+    }
+    
 
     public function actionDelete()
     {
@@ -75,9 +101,9 @@ class TransactionController extends BaseController
         return $this->render('index');
     }
 
-    public function actionUpdate()
-    {
-        return $this->render('update');
-    }
+    // public function actionUpdate()
+    // {
+    //     return $this->render('update');
+    // }
 
 }

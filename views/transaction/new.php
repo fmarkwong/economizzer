@@ -8,9 +8,7 @@ $this->title = Yii::t('app', 'New Transaction', [
 ?>
 <div class="cashbook-create">
 
-    <h2><?= Html::encode($this->title) ?></h2>
-    <?= $this->render('_form', [
-        'transaction' => $transaction,
-    ]) ?>
+    <h2><?= Html::encode($title) ?></h2>
+    <?= $this->render('_form', compact('transaction', 'action', 'showCategoryField')) ?>
 
 </div>

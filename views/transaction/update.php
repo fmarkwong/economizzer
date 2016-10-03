@@ -1,9 +1,13 @@
 <?php
-/* @var $this yii\web\View */
-?>
-<h1>transaction/update</h1>
 
-<p>
-    You may change the content of this page by modifying
-    the file <code><?= __FILE__; ?></code>.
-</p>
+use yii\helpers\Html;
+
+$this->title = $title; 
+
+?>
+<div class="cashbook-create">
+
+    <h2><?= Html::encode($this->title) ?></h2>
+    <?= $this->render('_form', compact('transaction', 'showCategoryField', 'action')) ?>
+
+</div>

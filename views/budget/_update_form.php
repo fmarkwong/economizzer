@@ -6,16 +6,15 @@ use yii\widgets\ActiveForm;
 use app\models\Category;
 use kartik\widgets\DatePicker;
 
+$this->registerJs($js);
 ?>
 
-<div class="cashbook-create">
-<h2><?= Html::encode($title) ?></h2>
 <div class="cashbook-form">
 
 <div class="col-md-8">
     <?php $form = ActiveForm::begin([
         'id' => 'cashbookform',
-        'action' => [$action],
+        'action' => ['update'],
         'options' => [
             'enctype'=>'multipart/form-data',
             'class' => 'form-horizontal',
@@ -25,7 +24,13 @@ use kartik\widgets\DatePicker;
             'labelOptions' => ['class' => 'col-lg-2 control-label'],
         ],
     ]); ?>
-    <br>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#home" data-toggle="tab"><i class="fa fa-cube"></i> <?php echo Yii::t('app', 'Basic Information');?></a></li>
+        <li><a href="#profile" data-toggle="tab"><i class="fa fa-cubes"></i> <?php echo Yii::t('app', 'Additional');?></a></li>
+    </ul>
+    <div class="tab-content">
+    <div class="tab-pane active" id="home">
     <p>
 
     <?php
@@ -42,23 +47,29 @@ use kartik\widgets\DatePicker;
             ]
         ]);
     ?>
-    <?php if (!$budget->isNewRecord) echo Html::hiddenInput('budget_id', $budget->id) ?>
-    <?php //if ($budget->isNewRecord) echo Html::hiddenInput('category_id', $budget->category_id) ?>
-    <?php if ($budget->isNewRecord) echo $form->field($budget, 'category_id')->hiddenInput(['value' => $budget->category_id])->label(false) ?> 
+    
 
-    <?php if ($showCategoryField) {
-            echo $form->field($budget, 'category_id', [
-                'inputOptions' => [
-                    'class' => 'selectpicker '
-                ]
-            ]
-            )->dropDownList(app\models\Category::getHierarchy($filterCategories), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
-        }
+    <?php // echo $form->field($model, 'category_id')->dropDownList(ArrayHelper::map(Category::find()->where(['user_id' => Yii::$app->user->identity->id, 'is_active' => 1])->orderBy("desc_category ASC")->all(), 'id_category', 'desc_category'),['prompt'=>Yii::t('app','Select')])  ?>
+
+    <?=
+    $form->field($budget, 'category_id', [
+        'inputOptions' => [
+            'class' => 'selectpicker '
+        ]
+    ]
+    )->dropDownList(app\models\Category::getHierarchy($filterCategories), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
     ?>
 
     <?= $form->field($budget, 'budgeted_value')->textInput(['size' => 10]) ?>
-    <?php if ($showSavingsGoalField) echo $form->field($budget, 'savings_goal')->textInput(['size' => 10]) ?>
+    <?php if ($savings) echo $form->field($budget, 'savings_goal')->textInput(['size' => 10]) ?>
 
+    </div>
+    <div class="tab-pane" id="profile">
+
+
+
+    </div>
+    </div>
 
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
@@ -70,6 +81,5 @@ use kartik\widgets\DatePicker;
 </div>
 <div class="col-md-4">
 <!-- ADS test -->
-</div>
 </div>
 </div>

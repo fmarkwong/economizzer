@@ -3,7 +3,7 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `accounts`.
+ * Handles the creation of table `account`.
  * Has foreign keys to the tables:
  *
  * - `user`
@@ -47,7 +47,7 @@ class m160819_204741_create_accounts_table extends Migration
         // drops foreign key for table `user`
         $this->dropForeignKey(
             'fk-account-user_id',
-            'accounts'
+            'account'
         );
 
         // drops index for column `user_id`

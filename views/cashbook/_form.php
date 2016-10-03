@@ -62,7 +62,7 @@ use kartik\widgets\DatePicker;
             'class' => 'selectpicker '
         ]
     ]
-    )->dropDownList(app\models\Category::getHierarchy(true), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
+    )->dropDownList(app\models\Category::getHierarchy(['-Income']), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
     ?>
 
     <?= $form->field($model, 'budgeted_value')->textInput(['size' => 10])->label('Budgeted Value') ?>
