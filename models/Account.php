@@ -44,6 +44,20 @@ class Account extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getTotalSaving()
+    {
+        return $this->hasMany(TotalSaving::className(), ['account_id' => 'id']);
+    }
+
+    public static function getTotalSavingTotal()
+    {
+        return self::currentAccount()->getTotalSaving()->sum('value');
+    }
+
+    public static function getTotalSavingGoal()
+    {
+        return self::currentAccount()->getTotalSaving()->sum('goal');
+    }
 
     /**
      * @return \yii\db\ActiveQuery

@@ -6,6 +6,7 @@ use Yii;
 use app\models\Budget;
 use app\models\Category;
 use app\models\Account;
+use app\models\TotalSaving;
 
 
 class BudgetController extends \yii\web\Controller
@@ -13,30 +14,20 @@ class BudgetController extends \yii\web\Controller
     public function actionNew()
     {
         $budget = $this->newBudget();
-        $budget->category_id = Yii::$app->request->get()['category_id'];
+        $budget->category_id = Yii::$app->request->get()['category-id'];
         $category = Category::findOne($budget->category_id);
+        $showSavingsGoalField = isset(Yii::$app->request->get()['show-savings-goal-field']);
 
         return $this->render('_form', [
             'title' => $category->desc_category,
             'budget'  => $budget, 
             'action' => 'create',
             'filterCategories'  => ['-Income', '-Savings'],
-            'showSavingsGoalField' => false,
+            'showSavingsGoalField' => $showSavingsGoalField,
             'showCategoryField' => false,
         ]);
     }
 
-    public function actionNewSavings()
-    {
-        return $this->render('new', [
-            'title'   => Yii::t('app', 'New Savings Entry', [ 'modelClass' => 'Budget', ]),
-            'budget'  => $this->newBudget(),
-            'filterCategories'  => ['+Savings'],
-            'savings' => true
-        ]);
-    }
-
-    // actually create or update
     public function actionCreate()
     {
         $budget = new Budget; 
@@ -52,6 +43,7 @@ class BudgetController extends \yii\web\Controller
             // if existingBudget, then update, else create new budget
             $budget = $existingBudget ? $existingBudget->incrementBudgetedValue($budget->budgeted_value) : $budget;
             if ($budget->save() && $account->save()) {
+                $this->saveSavingsGoal($budget, $account);
                 Yii::$app->session->setFlash("Entry-success", Yii::t("app", "Entry successfully included"));
                 return $this->redirect(['/cashbook/index']);
             } else {
@@ -60,6 +52,25 @@ class BudgetController extends \yii\web\Controller
         } 
     }
 
+    private function saveSavingsGoal($budget, $account)
+    {
+        $savingsGoalExists = isset(Yii::$app->request->post()['savings-goal']);
+        if (!$savingsGoalExists) return;
+
+        $savingsGoal = Yii::$app->request->post()['savings-goal'];
+        if ($budget->category->totalSaving) {
+            $budget->category->totalSaving->goal = $savingsGoal;
+            $budget->category->totalSaving->account_id = $account->id;
+            $budget->category->totalSaving->save();
+        } else {
+            $totalSaving = new TotalSaving();
+            $totalSaving->goal = $savingsGoal;
+            $totalSaving->account_id = $account->id;
+            $totalSaving->link('category', $budget->category);
+        }
+    }
+    
+
     public function actionUpdateBudgetedValueForm()
     {
         $id = Yii::$app->request->get()['id'];
@@ -67,34 +78,17 @@ class BudgetController extends \yii\web\Controller
         
         $budget = Budget::findOne($id);
         $category = $budget->category->desc_category;
-
+        $showSavingsGoalField = isset(Yii::$app->request->get()['show-savings-goal-field']);
         return $this->render('_form', [
             'title'   => $category, 
             'budget'  => $budget,
             'action'  => 'update',
             'filterCategories'  => null, 
             'showCategoryField'    => false,
-            'showSavingsGoalField' => false,
+            'showSavingsGoalField' => $showSavingsGoalField, 
         ]);
     }
 
-    public function actionUpdateSavingsForm()
-    {
-        $id = Yii::$app->request->get()['id'];
-        if ((int)$id === 0) return $this->actionNewSavings();
-        
-        $budget = Budget::findOne($id);
-        $category = $budget->category->desc_category;
-
-        return $this->render('update', [
-            'title'   => $category, 
-            'budget'  => $budget,
-            'action'  => 'update',
-            'filterCategories'  => null, 
-            'showCategoryField'    => false,
-            'showSavingsGoalField' => false,
-        ]);
-    }
     public function actionUpdate()
     {
         $budget = Budget::findOne(Yii::$app->request->post()['budget_id']);
@@ -109,6 +103,7 @@ class BudgetController extends \yii\web\Controller
 
             // $budget->incrementBudgetedValue($budget->budgeted_value);
             if ($budget->save() && $account->save()) {
+                $this->saveSavingsGoal($budget, $account);
                 Yii::$app->session->setFlash("Entry-success", Yii::t("app", "Entry successfully included"));
                 return $this->redirect(['/cashbook/index']);
             } else {

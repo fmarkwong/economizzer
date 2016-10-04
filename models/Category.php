@@ -27,7 +27,7 @@ class Category extends \yii\db\ActiveRecord
             'id_category' => Yii::t('app', 'ID'),
             'type_id' => Yii::t('app', 'Type'),
             'budgeted_total' => Yii::t('app', 'Total Budgeted Value'),
-            'actual_total' => Yii::t('app', 'Total Acutal Total'),
+            'actual_total' => Yii::t('app', 'Total Actual Total'),
             'desc_category' => Yii::t('app', 'Name'),
             'hexcolor_category' => Yii::t('app', 'Color'),
             'parent_id' => Yii::t('app', 'Parent Category'),
@@ -43,6 +43,11 @@ class Category extends \yii\db\ActiveRecord
     public function getUser() 
     { 
        return $this->hasOne(User::className(), ['id' => 'user_id']); 
+    } 
+
+    public function getTotalSaving() 
+    { 
+       return $this->hasOne(TotalSaving::className(), ['category_id' => 'id_category']); 
     } 
 
     // public static function getHierarchy($exclude_income = false) {
@@ -104,14 +109,17 @@ class Category extends \yii\db\ActiveRecord
         $excludeFilter = self::createFiltersQuery('!=', $excludeFilters); 
 
         $sql = <<<SQL
-        SELECT *, p.budgeted_total, p.actual_total, p.savings_goal_total
+        SELECT *, p.budgeted_total, p.actual_total
         FROM 
             (SELECT * FROM category WHERE user_id = :user_id AND parent_id IS NULL $selectFilter $excludeFilter) AS c 
         LEFT JOIN 
-            -- (SELECT parent_id, SUM(b.budgeted_value) AS budgeted_total, SUM(b.actual_value) AS actual_total
-            (SELECT parent_id, SUM(b.budgeted_value) AS budgeted_total, SUM(b.actual_value) AS actual_total, SUM(b.savings_goal) AS savings_goal_total
-             FROM category AS c LEFT JOIN budget AS b ON c.id_category = b.category_id  WHERE c.user_id=:user_id AND MONTH(b.date) = :month AND YEAR(b.date) = :year GROUP BY c.parent_id HAVING c.parent_id IS NOT NULL) AS p
-        ON c.id_category = p.parent_id
+            (SELECT parent_id, SUM(b.budgeted_value) AS budgeted_total, SUM(b.actual_value) AS actual_total
+             FROM category AS c LEFT JOIN budget AS b ON c.id_category = b.category_id
+             WHERE c.user_id=:user_id
+                AND MONTH(b.date) = :month
+                AND YEAR(b.date) = :year
+             GROUP BY c.parent_id HAVING c.parent_id IS NOT NULL) AS p
+                ON c.id_category = p.parent_id
 SQL;
         return self::findBySql($sql, [':user_id' => Yii::$app->user->id, ':month' => $month, ':year' => $year])->asArray()->all();
     }
@@ -168,6 +176,7 @@ SQL;
     }
     
     
+    //actually add default categoires and account for $userId
     public static function addDefaultCategories($userId)
     {
         $categories = [

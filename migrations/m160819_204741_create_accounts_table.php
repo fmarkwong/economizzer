@@ -19,6 +19,7 @@ class m160819_204741_create_accounts_table extends Migration
             'id' => $this->primaryKey(),
             'name' => $this->string(),
             'user_id' => $this->integer(),
+            'balance' => $this->float()->defaultValue(0)
         ]);
 
         // creates index for column `user_id`

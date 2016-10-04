@@ -45,6 +45,21 @@ testValue($I, [
         'fillFieldValue' => ['Actual Value', 150],
     ]);
 
+$rowBudgetedValue = $I->grabTextFrom('a#budgeted-value-category-id-1033');
+$totalBudgetedValue = $I->grabTextFrom('td#budgeted-value-total-category-id-1032');
+$I->assertEquals($rowBudgetedValue, $totalBudgetedValue);
+
+$rowActualValue = $I->grabTextFrom('a#actual-value-category-id-1033');
+$totalActualValue = $I->grabTextFrom('td#actual-value-total-category-id-1032');
+$I->assertEquals($rowActualValue, $totalActualValue);
+
+$rowBalanceValue = $I->grabTextFrom('strong#balance-category-id-1033');
+$totalBalanceValue = $I->grabTextFrom('td#balance-total-category-id-1032');
+
+$I->assertEquals($rowBalanceValue, $rowBudgetedValue - $rowActualValue);
+$I->assertEquals($totalBalanceValue, $totalBudgetedValue - $totalActualValue);
+
+
 
 function testValue($I, $params)
 {
@@ -56,7 +71,7 @@ function testValue($I, $params)
     $valueLinkField = "#$valueType-value-category-id-{$params['categoryId']}";
 
     $formUrlPartial = $params['newOrUpdate'] === 'new' ? 'new?' : "update-$valueType-value-form?id=1&"; 
-    $formUrl = "/{$params['objectType']}/{$formUrlPartial}category_id={$params['categoryId']}";
+    $formUrl = "/{$params['objectType']}/{$formUrlPartial}category-id={$params['categoryId']}";
 
     $I->amGoingTo($params['testName']);
     $fieldValue = $I->grabTextFrom($valueLinkField);

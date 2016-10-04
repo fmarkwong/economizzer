@@ -5,12 +5,18 @@ namespace app\controllers;
 use Yii;
 use app\models\Transaction;
 use app\models\Category;
+use app\models\TotalSaving;
 
 class TransactionController extends BaseController
 {
     public function actionNew()
     {
-        $categoryId  = Yii::$app->request->get()['category_id'];
+        // if no category-id param, that means we're coming from Add transaction button 
+        // on cashbook/index (instead of clicking on value) so set category_id to null
+        // and need to show categoryfield.  Eventually we'll want to set category to income since
+        // we'll only be using the add transaction button for income.
+        $categoryIdExists = isset(Yii::$app->request->get()['category-id']);
+        $categoryId  = $categoryIdExists ? Yii::$app->request->get()['category-id'] : null;
         $session = Yii::$app->session;
 
         if ($session->has('monthIndex') && $session->has('year')) {
@@ -26,11 +32,14 @@ class TransactionController extends BaseController
         $transaction = new Transaction;
         $transaction->category_id = $categoryId;
         $transaction->date = $date; 
+        $title = $categoryIdExists ? $transaction->category->desc_category : '';
+
+        $showCategoryField = !$categoryIdExists;
         return $this->render('new', [
             'transaction' => $transaction,
-            'title' => $transaction->category->desc_category,
+            'title' => $title, 
             'action' => 'create', 
-            'showCategoryField' => false
+            'showCategoryField' => $showCategoryField 
         ]);
     }
 
@@ -68,6 +77,22 @@ class TransactionController extends BaseController
         } elseif ($transaction->category->type->desc_type === 'Expense') {
             $transaction->account->balance -= $transaction->value;
             $currentBudget->actual_value += (float)$transaction->value;
+            if ($currentBudget->category->parent->desc_category === 'Savings') {
+                if (!$transaction->category->totalSaving) {
+                    $totalSavings = new TotalSaving();
+                    $totalSavings->value += (float)$transaction->value;
+                    $totalSavings->category_id = $transaction->category->id_category;
+                    $totalSavings->link('account', $transaction->account);
+                } else {
+                    // $transaction->account->totalSaving->value += (float)$transaction->value;
+                    // $transaction->account->totalSaving->category_id = $transaction->category->id_category;
+                    // $transaction->account->totalSaving->save();
+                    $transaction->category->totalSaving->value += (float)$transaction->value;
+                    $transaction->category->totalSaving->account_id = $transaction->account->id;
+                    // $transaction->category->totalSaving->category_id = $transaction->category->id_category;
+                    $transaction->category->totalSaving->save();
+                }
+            }
         } else {
             throw new Exception("Category Type Error");
         }
@@ -100,10 +125,5 @@ class TransactionController extends BaseController
     {
         return $this->render('index');
     }
-
-    // public function actionUpdate()
-    // {
-    //     return $this->render('update');
-    // }
 
 }

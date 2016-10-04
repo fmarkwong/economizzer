@@ -43,7 +43,6 @@ use kartik\widgets\DatePicker;
         ]);
     ?>
     <?php if (!$budget->isNewRecord) echo Html::hiddenInput('budget_id', $budget->id) ?>
-    <?php //if ($budget->isNewRecord) echo Html::hiddenInput('category_id', $budget->category_id) ?>
     <?php if ($budget->isNewRecord) echo $form->field($budget, 'category_id')->hiddenInput(['value' => $budget->category_id])->label(false) ?> 
 
     <?php if ($showCategoryField) {
@@ -56,8 +55,17 @@ use kartik\widgets\DatePicker;
         }
     ?>
 
-    <?= $form->field($budget, 'budgeted_value')->textInput(['size' => 10]) ?>
-    <?php if ($showSavingsGoalField) echo $form->field($budget, 'savings_goal')->textInput(['size' => 10]) ?>
+    <?php if (!$showSavingsGoalField) echo $form->field($budget, 'budgeted_value')->textInput(['size' => 10]) ?>
+    <?php //if ($showSavingsGoalField) echo $form->field($budget, 'savings_goal')->textInput(['size' => 10]) ?>
+    <?php if ($showSavingsGoalField): ?>
+        <div class="form-group field-savings-goal"> 
+            <label class="col-lg-2 control-label" for="savings-goal">Savings Goal</label>
+            <div class="col-lg-4">
+                <?= Html::textInput('savings-goal', null, ['id' => 'savings-goal', 'class' => 'form-control', 'size' => 10]) ?>
+            </div>
+            <div class="col-lg-7"><div class="help-block"></div></div>
+        </div> 
+    <?php endif ?>
 
 
     <div class="form-group">

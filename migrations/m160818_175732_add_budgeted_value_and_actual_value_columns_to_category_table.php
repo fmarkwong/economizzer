@@ -12,8 +12,8 @@ class m160818_175732_add_budgeted_value_and_actual_value_columns_to_category_tab
      */
     public function up()
     {
-        $this->addColumn('category', 'budgeted_value', $this->float());
-        $this->addColumn('category', 'actual_value', $this->float());
+        $this->addColumn('category', 'budgeted_value', $this->float()->defaultValue(0));
+        $this->addColumn('category', 'actual_value', $this->float()->defaultValue(0));
 
         $cashBooks = app\models\Cashbook::find()->all();
 

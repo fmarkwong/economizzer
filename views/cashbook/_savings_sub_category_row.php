@@ -1,12 +1,19 @@
 <?php
 use yii\helpers\Html;
-$updateBudgetedValueLink = Html::a($budgetedValue, ["/budget/update-budgeted-value-form", 'id' => $budgetId]);
+use app\helpers\CashBookHelper;
+
+$budgetUrl = $budgetId ? "/budget/update-budgeted-value-form" : "/budget/new";
+// if ($categoryId == 1050) eval(\Psy\sh());
+$updateBudgetedValueLink = Html::a($budgetedValue, [$budgetUrl, 'id' => $budgetId, 'category-id' => $categoryId], ['id' => "savings-budgeted-value-category-id-$categoryId"]);
+$updateSavingsGoalLink = Html::a($savingsGoal, [$budgetUrl, 'id' => $budgetId, 'category-id' => $categoryId, 'show-savings-goal-field' => 'true'], ['id' => "savings-goal-category-id-$categoryId"]);
+$transactionUrl = $transactionId ? "/transaction/update-actual-value-form" : "/transaction/new";
+$updateActualValueLink = Html::a($actualValue, [$transactionUrl, 'id' => $transactionId, 'category-id' => $categoryId], ['id' => "actual-value-category-id-$categoryId"]);
 ?>
-<tr class="shift">
+<tr class="shift" style="cursor: pointer" data-key="<?=$budgetId?>">
     <td style="text-align:left;padding-left: 2em"><span style="color:"><?=$subCategory->desc_category?></span></td>
-    <td style="text-align:left;padding-left: 2em"><?=$updateBudgetedValueLink?></td>
-    <td style="text-align:left;padding-left: 2em"><?=$actualValue?></td>
-    <td style="text-align:left;padding-left: 2em"><strong style='color: <?=$subCategoryBalanceColor?>'><?=$subCategoryBalance?></strong></td>
-    <td style="text-align:left;padding-left: 3em"><strong style='color: <?=$subCategoryBalanceColor?>'><?=$totalGoal?></strong></td>
-    <td style="text-align:left;padding-left: 6em"><strong style='color: <?=$subCategoryBalanceColor?>'><?=$percentageCompleted . '%'?></strong></td>
+    <td style="text-align:left;padding-left: 3.25em"><?=$updateBudgetedValueLink?></td>
+    <td style="text-align:left;padding-left: 2.5em"><?=$updateActualValueLink?></td>
+    <td style="text-align:left;padding-left: 1.5em"><strong id="balance-category-id-<?=$subCategory->id_category?>" style='color: <?= CashbookHelper::color($subCategoryBalance)?>'><?=$subCategoryBalance?></strong></td>
+    <td style="text-align:left;padding-left: 3em"><strong style='color: <?= 0 ?>'><?=$totalSavings?></strong></td>
+    <td style="text-align:left;padding-left: 1.5em"><strong style='color: <?= 0 ?>'><?="$updateSavingsGoalLink / $percentageCompleted"?></strong></td>
 </tr>

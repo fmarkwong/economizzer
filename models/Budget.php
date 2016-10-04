@@ -29,7 +29,7 @@ class Budget extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['budgeted_value', 'actual_value', 'savings_goal', 'debt_goal'], 'number'],
+            [['budgeted_value', 'actual_value'], 'number'],
             [['date'], 'safe'],
             [['category_id'], 'integer'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id_category']],
@@ -52,6 +52,7 @@ class Budget extends \yii\db\ActiveRecord
 
     public function incrementBudgetedValue($value)
     {
+        //TODO: use updateCounters instead: see http://www.yiiframework.com/doc-2.0/guide-db-active-record.html#updating-counters
         $this->budgeted_value += $value;
         return $this;
     }
@@ -59,6 +60,11 @@ class Budget extends \yii\db\ActiveRecord
     public function getCategory()
     {
         return $this->hasOne(Category::className(), ['id_category' => 'category_id']);
+    }
+
+    public function getTransaction()
+    {
+        return $this->hasOne(Transaction::className(), ['id' => 'transaction_id']);
     }
     
 }

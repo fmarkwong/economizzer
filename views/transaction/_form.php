@@ -65,7 +65,7 @@ use kartik\widgets\DatePicker;
                 'inputOptions' => [
                     'class' => 'selectpicker '
                 ]
-            ])->dropDownList(app\models\Category::getHierarchy(), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
+            ])->dropDownList(app\models\Category::getHierarchy(['+Income']), ['prompt' => Yii::t('app', 'Select'), 'class'=>'form-control required']);
         }
         ?>
 

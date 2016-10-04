@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use app\models\Cashbook;
+use app\models\Account;
+use app\models\TotalSaving;
 use app\helpers\CashBookHelper;
 use app\helpers\ViewHelper;
 
@@ -25,9 +27,11 @@ $this->params['breadcrumbs'][] = $this->title;
             <h2>
               <span><?= Html::encode($this->title) ?></span>
               <?php $color = CashBookHelper::balanceColor($totalLeftToBudget) ?>
-              <span style="color: <?=$color?>; font-size: 20px; vertical-align: middle"> Left to budget: <?= $totalLeftToBudget?></span>
-                <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/budget/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
+              <span style="color: <?=CashBookHelper::balanceColor($totalLeftToBudget)?>; font-size: 20px; vertical-align: middle"> Left to budget: <?= $totalLeftToBudget?></span>
+                <?php //echo Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/budget/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
             </h2>
+                <div style='float:right; font-size: 1.2em'>Add or update values by clicking on the value.</div>
+                <br>
             <hr>
 
             <?php ViewHelper::displayAllFlashes() ?>
@@ -47,8 +51,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     foreach($categories as $category) {
                         $parent_category = $category['desc_category']; 
                         $sub_categories = app\models\Category::subCategories($category['id_category']); 
-                        $left_to_budget_color = cashBookHelper::balanceColor($category_balance = $category['budgeted_total'] - $category['actual_total']);
-                        echo $this->render('_parent_category_row', compact('parent_category', 'category', 'left_to_budget_color', 'category_balance'));
+                        $category_balance = $category['budgeted_total'] - $category['actual_total'];
+                        echo $this->render('_parent_category_row', compact('parent_category', 'category', 'category_balance'));
 
                         foreach($sub_categories as $subCategory) {
                             $categoryId    = $subCategory->id_category;
@@ -58,8 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             $budgetedValue = $currentBudget ? $currentBudget->budgeted_value : 0;
                             $actualValue   = $currentBudget ? $currentBudget->actual_value : 0;
                             $subCategoryBalance = $budgetedValue - $actualValue;
-                            $subCategoryBalanceColor = cashBookHelper::balanceColor($subCategoryBalance);
-                            echo $this->render('_sub_category_row', compact('subCategory', 'subCategoryBalance', 'subCategoryBalanceColor', 'actualValue', 'budgetedValue', 'budgetId', 'categoryId', 'transactionId'));
+                            echo $this->render('_sub_category_row', compact('subCategory', 'subCategoryBalance', 'actualValue', 'budgetedValue', 'budgetId', 'categoryId', 'transactionId'));
                         }
                     } 
 ?>
@@ -68,9 +71,9 @@ $this->params['breadcrumbs'][] = $this->title;
             </div> <!-- w1 gridview-->
         </div><!-- BUDGETS SECTION END -->
         <br>
-        <?php if ($savingsCategory): ?>
-                <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/budget/new-savings'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
-        <div class="cashbook-index"> <!-- SAVING GOALS SECTION -->
+        <?php if ($savingsCategory): ?> <!-- SAVING GOALS SECTION -->
+                <?php //echo Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/budget/new-savings'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
+        <div class="cashbook-index">
             <div id="w1" class="grid-view">
                 <table class="table table-striped table-hover">
                     <thead>
@@ -79,8 +82,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <th><a href="/budgeter/web/cashbook/index?sort=budgeted_value" data-sort="budgeted_value">Budgeted Value</a></th>
                             <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Actual Value</a></th>
                             <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Balance</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Total Goal</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Percentage Completed</a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Total Savings</a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Goal / Completed</a></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,21 +91,32 @@ $this->params['breadcrumbs'][] = $this->title;
                     foreach($savingsCategory as $category) {
                         $parent_category = $category['desc_category']; 
                         $sub_categories = app\models\Category::subCategories($category['id_category']); 
-                        $totalSavingsGoal = $category['savings_goal_total'];
-                        $left_to_budget_color = cashBookHelper::balanceColor($category_balance = $category['budgeted_total'] - $category['actual_total']);
-                        echo $this->render('_savings_parent_category_row', compact('parent_category', 'category', 'left_to_budget_color', 'category_balance', 'totalSavingsGoal'));
+                        $totalSavingsTotal = app\models\Account::getTotalSavingTotal(); 
+                        // $totalSavingsGoal = $category['savings_goal_total'];
+                        $totalSavingsGoal = app\models\Account::getTotalSavingGoal();  
+                        $category_balance = $category['budgeted_total'] - $category['actual_total'];
+                        $totalPercentageCompleted = ($totalSavingsGoal > 0 ? ($totalSavingsTotal / $totalSavingsGoal) : 0);
+                        $formatter = Yii::$app->formatter;
+                        $totalPercentageCompleted = $formatter->asPercent($totalPercentageCompleted);
+                        echo $this->render('_savings_parent_category_row', compact('parent_category', 'category', 'category_balance', 'totalSavingsGoal', 'totalPercentageCompleted', 'totalSavingsTotal'));
 
                         foreach($sub_categories as $subCategory) {
                             $categoryId    = $subCategory->id_category;
-                            $currentBudget = $subCategory->getCurrentBudget();
+                            $currentBudget = $subCategory->getCurrentBudget(); //TODO: add nullBudget object if not found so we don't have to keep checking for null below
                             $budgetId      = $currentBudget ? $currentBudget->id: 0;
+                            $transaction   = $currentBudget ? $currentBudget->transaction : null;
+                            $transactionId = $transaction ? $transaction->id : null;
                             $budgetedValue = $currentBudget ? $currentBudget->budgeted_value : 0;
                             $actualValue   = $currentBudget ? $currentBudget->actual_value : 0;
                             $subCategoryBalance = $budgetedValue - $actualValue;
-                            $subCategoryBalanceColor = cashBookHelper::balanceColor($subCategoryBalance);
-                            $totalGoal = $currentBudget ? $currentBudget->savings_goal : 0;
-                            $percentageCompleted = $currentBudget ? ($actualValue / $totalGoal) * 100 : 0;
-                            echo $this->render('_savings_sub_category_row', compact('subCategory', 'subCategoryBalance', 'subCategoryBalanceColor', 'actualValue', 'budgetedValue', 'totalGoal', 'percentageCompleted', 'categoryId', 'budgetId'));
+                            $totalSavings = $subCategory->totalSaving ? $subCategory->totalSaving->value : 0; 
+                            // $savingsGoal = $currentBudget ? $currentBudget->savings_goal : 0;
+                            $savingsGoal = $subCategory->totalSaving ? $subCategory->totalSaving->goal : 0; 
+                            // $percentageCompleted = $savingsGoal > 0 ? ($totalSavings / $savingsGoal) * 100 : 0;
+                            $percentageCompleted = $savingsGoal > 0 ? ($totalSavings / $savingsGoal) : 0;
+                            $percentageCompleted = $formatter->asPercent($percentageCompleted);
+                            
+                            echo $this->render('_savings_sub_category_row', compact('subCategory', 'subCategoryBalance', 'actualValue', 'budgetedValue', 'savingsGoal', 'percentageCompleted', 'categoryId', 'budgetId', 'transactionId', 'totalSavings'));
                         }
                     } 
 ?>
