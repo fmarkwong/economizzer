@@ -7,8 +7,8 @@ $db_pass = getenv('DB_PASS');
 
 return [
     'class' => 'yii\db\Connection',
-    // 'dsn' => "mysql:host=127.0.0.1;dbname=$db_name",
-    'dsn' => "mysql:host=localhost;dbname=$db_name",
+    'dsn' => "mysql:host=127.0.0.1;dbname=$db_name",
+    // 'dsn' => "mysql:host=localhost;dbname=$db_name",
     'username' => $db_user,
     'password' => $db_pass,
     'charset' => 'utf8',
