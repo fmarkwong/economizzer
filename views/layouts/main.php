@@ -13,7 +13,7 @@ use app\assets\AppAsset;
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
-    <title>Micro Empire Budgeter</title>
+    <title><?= Yii::t('app', 'Micro Empire Budgeter') ?></title>
     <?php $this->head();
     AppAsset::register($this);
     $js = <<< 'SCRIPT'
@@ -51,7 +51,7 @@ SCRIPT;
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => '<img src="'.Yii::$app->request->baseUrl.'/images/logo-icon.png" style="height:20px;float:left;margin-right: 5px" align="absbottom">  Micro Empire Budgeter',
+                'brandLabel' => '<img src="'.Yii::$app->request->baseUrl.'/images/logo-icon.png" style="height:20px;float:left;margin-right: 5px" align="absbottom">  ' . Yii::t('app', 'Micro Empire Budgeter'),
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar navbar-default navbar-fixed-top',
@@ -70,6 +70,15 @@ SCRIPT;
                             ['label' => '<span class="glyphicon glyphicon-tags" aria-hidden="true"></span> '.Yii::t('app', 'Categories'), 'url' => ['/category/index']],
                             // ['label' => '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> '.Yii::t('app', 'Tools'), 'url' => ['/site/tools']],                            
                         ],
+                    ],
+                    [
+                        'label' => 'Language',
+                        'items' => [
+                            ['label' => '<span aria-hidden="true"></span> '.Yii::t('app', 'Burmese'), 'url' => ['/language/select?language=mm']],
+                            ['label' => '<span aria-hidden="true"></span> '.Yii::t('app', 'English'), 'url' => ['/language/select?language=en']],
+
+                        ]
+
                     ],
                     Yii::$app->user->isGuest ?
                     ['label' => '<span class="glyphicon glyphicon-user" aria-hidden="true"></span> '.Yii::t('app', 'Create an account'), 'url' => ['/user/register']] :

@@ -6,6 +6,8 @@ $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure login and budgeting works');
 
 $I->amOnPage('/user/login');
+$I->click('Language');
+$I->click('English');
 $I->fillField('#loginform-username', 'joe');
 $I->fillField('#loginform-password', '123456');
 $I->click('Login');

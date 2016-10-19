@@ -9,7 +9,7 @@ $config = [
         'log',
         [
             'class' => 'app\components\LanguageSelector',
-            'supportedLanguages' => ['en', 'pt-br', 'ru', 'ko'],
+            'supportedLanguages' => ['en', 'pt-br', 'ru', 'ko', 'mm'],
         ],
     ],
     //'defaultRoute' => 'cashbook/index',

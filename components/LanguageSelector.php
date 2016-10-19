@@ -16,7 +16,7 @@ class LanguageSelector implements BootstrapInterface
     {
         if(!Yii::$app->user->isGuest) {
 
-            Yii::$app->language = Yii::$app->user->identity->profile->language;
+            // Yii::$app->language = Yii::$app->user->identity->profile->language;
             Yii::$app->defaultRoute = Yii::$app->user->identity->profile->startpage;
             //Yii::$app->defaultRoute = 'cashbook/overview';
             //Yii::$app->user->getIdentity()->language = Yii::$app->language;
@@ -27,7 +27,8 @@ class LanguageSelector implements BootstrapInterface
             // Yii::$app->formatter->currencyCode = 'EUR';
             // Yii::$app->formatter->decimalSeparator = ',';
         }else{
-            Yii::$app->language = Yii::$app->request->getPreferredLanguage($this->supportedLanguages);
+            // Yii::$app->language = Yii::$app->request->getPreferredLanguage($this->supportedLanguages);
         }
+            Yii::$app->language = Yii::$app->request->cookies->getValue('language', 'mm'); 
     }
 }
