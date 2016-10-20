@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'adminEmail' => 'admin@example.com',
+    'adminEmail' => 'no-reply@micro-empire.com',
     'uploadPath' => 'attachment/',
 	'uploadUrl'  => 'attachment/',
 ];

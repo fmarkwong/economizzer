@@ -3,7 +3,7 @@
 $params = require(__DIR__ . '/params.php');
 
 $config = [
-    'id' => 'economizzer',
+    'id' => Yii::t('app', 'Micro Empire Education Budgeter'),
     'basePath' => dirname(__DIR__),
     'bootstrap' => [
         'log',
@@ -51,7 +51,8 @@ $config = [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => false,
             'messageConfig' => [
-                'from' => ['master@economizzer.com' => 'Admin'],
+                /* this must be empty array or email won't work.  See config/params.php to set from */
+                'from' => [],
                 'charset' => 'UTF-8',
             ]
         ],
