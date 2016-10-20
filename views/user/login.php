@@ -26,6 +26,7 @@ use yii\widgets\ActiveForm;
 		            <?= Html::a(Yii::t('app', 'Forgot password') . "?", ["/user/forgot"], array('class' => 'text-center new-account')) ?>
 
 			<?php ActiveForm::end(); ?>
+            <?= Html::tag('p', Yii::t('app', 'Log in with your Facebook Account'),array('class' => 'text-center new-account')) ?>
 
 		    <?php if (Yii::$app->get("authClientCollection", false) && true): //TODO: ?>
 			<!-- <div class="col-lg-offset-2"> -->

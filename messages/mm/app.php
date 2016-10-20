@@ -18,9 +18,7 @@
  */
 return [
     'Account' => 'အကောင့်',
-    'Account ID' => '',
     'Actual Value' => 'သင္ခန္းစာမ်ား',
-    'Add' => '',
     'Add or update values by clicking on the value' => 'တန်ဖိုးအပေါ်နှိပ်ခြင်းအားဖြင့် Add သို့မဟုတ် update ကိုတန်ဖိုးများ',
     'Balance' => 'ချိန်ခွင်လျှာ',
     'Budget' => 'ဘတ်ဂျက်',
@@ -40,9 +38,6 @@ return [
     'E-mail or Username' => 'အီးမေးလ်သို့မဟုတ်အသုံးပြုသူအမည်',
     'Edit Datetime' => '',
     'Email' => 'အီးမေးလ်က',
-    'Entry successfully deleted' => '',
-    'Entry successfully included' => '',
-    'Entry updated' => '',
     'Forgot password' => 'စကားဝှက်ကိုမေ့နေပါသလား',
     'Left to budget' => 'ဘတ်ဂျက်မှ Left',
     'Login' => 'လော့ဂ်အ',
@@ -83,6 +78,7 @@ return [
     'Goal / Completed' => '',
     'House Down Payment' => '',
     'Refrigerator' => '',
+    'Log in with your Facebook Account' => '',
     'January' => '',
     'February' => '',
     'March' => '',
