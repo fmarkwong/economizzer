@@ -71,45 +71,9 @@ $this->title = Yii::t('app', 'Account');
 
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <?= Html::submitButton('<i class="fa fa-pencil-square-o"></i> '.Yii::t('user', 'Update'), ['class' => 'btn btn-primary']) ?>
+            <?= Html::submitButton('<i class="fa fa-pencil-square-o"></i> '.Yii::t('app', 'Update'), ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
 
     <?php ActiveForm::end(); ?>
-
-    <hr/>
-
-    <div class="keychain">
-        <h3><?=Yii::t('user', 'Keychain')?></h3>
-        <div class="keychain-connected">
-            <?php foreach($keychainConnects as $keychainConnect):?>
-                <div class="row service">
-                    <div class="col-sm-12">
-                        <div class="fields-title">
-                            <?=ucfirst($keychainConnect['provider'])?> <span class="label label-success"><?=Yii::t('user','Connected')?></span>
-                        </div>
-                    </div>
-                    <div class="col-sm-9"><?=Html::a(Html::img($keychainConnect['imageUrl']), $keychainConnect['url'])?> <?=$keychainConnect['displayName']?></div>
-                    <div class="col-sm-3">
-
-                        <div class="fields-btn">
-                            <?= Html::a(Yii::t('user','Disconnect'), ['/user/auth/disconnect', 'id'=>$keychainConnect['id']], ['class' => 'btn btn-sm btn-danger'])?>
-                        </div>
-                    </div>
-                </div>
-                <hr/>
-            <?php endforeach;?>
-        </div>
-        <div class="keychain-bind">
-            <h4><?=Yii::t('user', 'Bind account')?></h4>
-            <div class="keychain-bind-description">
-                <?=Yii::t('user', 'Linking social network accounts (can be several) to your account will allow you to enter in a single click.')?>
-            </div>
-        </div>
-    </div>
-    <?= app\widgets\authchoice\AuthChoice::widget([
-        'baseAuthUrl' => ['/user/auth/connect'],
-        'keychainConnects' => $keychainConnects
-    ]) ?>
-
 </div>

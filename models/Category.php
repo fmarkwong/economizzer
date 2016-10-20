@@ -185,7 +185,7 @@ SQL;
                                   'type' => 2,
                                   'sub_categories' => ['Rent/Mortgage', 'Groceries', 'Electric', 'Water', 'Phone', 'Transportation', 'Interest & Fees'],
                               ],
-                          'True Expenses' =>
+                          'Other Expenses' =>
                               [
                                   'type' => 2,
                                   'sub_categories' => ['Auto Maintenance', 'Home Maintenance', 'Insurance', 'Medical', 'Clothing', 'Gifts', 'Giving', 'Stuff I forgot to budget for'],

@@ -30,7 +30,7 @@ $this->title = Yii::t('app', 'Register');
         ]); ?>
 
         <?php if (Yii::$app->getModule("user")->requireEmail): ?>
-            <?= $form->field($user, 'email') ?>
+            <?= $form->field($user, 'email')->label(Yii::t('app', 'Email')) ?>
             <div class="col-lg-offset-1" style="color:#999;">
                 <!-- TODO: <p><?= Yii::t('app', 'Enter a valid email! You need to confirm your registration!') ?></p> -->
             </div>
@@ -55,7 +55,7 @@ $this->title = Yii::t('app', 'Register');
             <div class="col-lg-offset-1 col-lg-10">
                 <?= Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']) ?>
 
-                <?= Html::a(Yii::t('user', 'Login'), ["/user/login"]) ?>
+                <?= Html::a(Yii::t('app', 'Login'), ["/user/login"]) ?>
             </div>
         </div>
 

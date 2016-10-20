@@ -16,6 +16,6 @@ class LanguageController extends \yii\web\Controller
                 'value' => $language,
             ]));
         }
-        return $this->goBack();
+        return $this->redirect(Yii::$app->request->referrer);
     }
 }

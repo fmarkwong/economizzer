@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row">
     <div class="col-sm-4 col-sm-offset-4 month-picker">
         <?= Html::a(null, ['/cashbook/previous-month'], ['class' => 'glyphicon glyphicon-circle-arrow-left']) ?>
-        <h2 class="month-picker"><?= "$month $year"?></h2>
+        <h2 class="month-picker"><?= Yii::t('app', $month) . " $year"?></h2>
         <?= Html::a(null, ['/cashbook/next-month'], ['class' => 'glyphicon glyphicon-circle-arrow-right']) ?>
     </div>
 </div> <!-- row -->
@@ -27,10 +27,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <h2>
               <span><?= Html::encode($this->title) ?></span>
               <?php $color = CashBookHelper::balanceColor($totalLeftToBudget) ?>
-              <span style="color: <?=CashBookHelper::balanceColor($totalLeftToBudget)?>; font-size: 20px; vertical-align: middle"> Left to budget: <?= $totalLeftToBudget?></span>
+              <span style="color: <?=CashBookHelper::balanceColor($totalLeftToBudget)?>; font-size: 20px; vertical-align: middle"> <?= Yii::t('app', 'Left to budget') . ": $totalLeftToBudget" ?></span>
                 <?php //echo Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/budget/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
             </h2>
-                <div style='float:right; font-size: 1.2em'>Add or update values by clicking on the value.</div>
+            <div style='float:right; font-size: 1.2em'><?= Yii::t('app', 'Add or update values by clicking on the value') ?>.</div>
                 <br>
             <hr>
 
@@ -40,10 +40,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th><a href="/budgeter/web/cashbook/index?sort=parent_category_id" data-sort="parent_category_id">Category</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=budgeted_value" data-sort="budgeted_value">Budgeted Value</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Actual Value</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Balance</a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=parent_category_id" data-sort="parent_category_id"><?= Yii::t('app', 'Category') ?></a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=budgeted_value" data-sort="budgeted_value"><?= Yii::t('app', 'Budgeted Value') ?></a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value"><?= Yii::t('app', 'Actual Value') ?></a></th>
+                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value"><?= Yii::t('app', 'Balance') ?></a></th>
                         </tr>
                     </thead>
                     <tbody>

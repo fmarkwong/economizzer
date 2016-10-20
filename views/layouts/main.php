@@ -61,15 +61,10 @@ SCRIPT;
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'encodeLabels' => false,
                 'items' => [
-                    ['label' => '<span class="glyphicon glyphicon-stats" aria-hidden="true"></span> '.Yii::t('app', 'Overview'), 'url' => ['/dashboard/overview'], 'visible' => !Yii::$app->user->isGuest,],
-                    ['label' => '<span class="glyphicon glyphicon-usd" aria-hidden="true"></span> '.Yii::t('app', 'Entries'), 'url' => ['/cashbook/index'], 'visible' => !Yii::$app->user->isGuest,],
-                    ['label' => '<span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> '.Yii::t('app', 'Targets'), 'url' => ['/cashbook/target'], 'visible' => !Yii::$app->user->isGuest,],
-                    ['label' => '<span class="glyphicon glyphicon-cog" aria-hidden="true"></span> '.Yii::t('app', 'Options'), 'visible' => !Yii::$app->user->isGuest,
-                    'items' => 
-                        [
-                            ['label' => '<span class="glyphicon glyphicon-tags" aria-hidden="true"></span> '.Yii::t('app', 'Categories'), 'url' => ['/category/index']],
-                            // ['label' => '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> '.Yii::t('app', 'Tools'), 'url' => ['/site/tools']],                            
-                        ],
+                    // ['label' => '<span class="glyphicon glyphicon-stats" aria-hidden="true"></span> '.Yii::t('app', 'Overview'), 'url' => ['/dashboard/overview'], 'visible' => !Yii::$app->user->isGuest,],
+                    ['label' => '<span class="glyphicon glyphicon-usd" aria-hidden="true"></span> '.Yii::t('app', 'Budgets'), 'url' => ['/cashbook/index'], 'visible' => !Yii::$app->user->isGuest,],
+                    // ['label' => '<span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> '.Yii::t('app', 'Targets'), 'url' => ['/cashbook/target'], 'visible' => !Yii::$app->user->isGuest,],
+                    ['label' => '<span class="glyphicon glyphicon-tags" aria-hidden="true"></span> '.Yii::t('app', 'Categories'), 'visible' => !Yii::$app->user->isGuest, 'url' => ['/category/index']
                     ],
                     [
                         'label' => 'Language',
@@ -88,7 +83,7 @@ SCRIPT;
                             ['label' => '<span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> '.Yii::t('app', 'Account'), 'url' => ['/user/account']],
                             ['label' => '<span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> '.Yii::t('app', 'Profile'), 'url' => ['/user/profile']],
                             '<li class="divider"></li>',
-                            ['label' => '<i class="fa fa-unlock"></i> '.Yii::t('app', 'Sign Out'),
+                            ['label' => '<i class="fa fa-unlock"></i> '.Yii::t('app', 'Log Out'),
                                 'url' => ['/user/logout'],
                                 'linkOptions' => ['data-method' => 'post']],
                         ],

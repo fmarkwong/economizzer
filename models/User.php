@@ -55,6 +55,7 @@ class User extends BaseUser
             'username' => Yii::t('app', 'Username'),
             'newPassword' => Yii::t('app', 'New Password'),
             'currentPassword' => Yii::t('app', 'Current Password'),
+            'email' => Yii::t('app', 'Email'),
         ];
     }    
 
