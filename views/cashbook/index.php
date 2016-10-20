@@ -10,6 +10,18 @@ use app\helpers\ViewHelper;
 
 $this->title = Yii::t('app', 'Budget');
 $this->params['breadcrumbs'][] = $this->title;
+
+function Tip($text) {
+     return Html::tag('i', '', [
+                'title'=> $text . '.',
+                'data-toggle'=>'tooltip',
+                'style'=>'cursor:pointer;',
+                'class'=>'fa fa-question-circle',
+            ]);
+}
+
+$budgetedValueTooltip = Tip(Yii::t('app', "Enter how much you plan to spend in each category for the month"));
+$actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category, record it here"));
 ?>
 
 <div class="row">
@@ -30,8 +42,8 @@ $this->params['breadcrumbs'][] = $this->title;
               <span style="color: <?=CashBookHelper::balanceColor($totalLeftToBudget)?>; font-size: 20px; vertical-align: middle"> <?= Yii::t('app', 'Left to budget') . ": $totalLeftToBudget" ?></span>
                 <?php //echo Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/budget/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
             </h2>
-            <div style='float:right; font-size: 1.2em'><?= Yii::t('app', 'Add or update values by clicking on the value') ?>.</div>
-                <br>
+            <div style='float:right; font-size: 1.1em'><?= Yii::t('app', 'Add or update values by clicking on the value') ?>.</div>
+            <br>
             <hr>
 
             <?php ViewHelper::displayAllFlashes() ?>
@@ -40,10 +52,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th><a href="/budgeter/web/cashbook/index?sort=parent_category_id" data-sort="parent_category_id"><?= Yii::t('app', 'Category') ?></a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=budgeted_value" data-sort="budgeted_value"><?= Yii::t('app', 'Budgeted Value') ?></a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value"><?= Yii::t('app', 'Actual Value') ?></a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value"><?= Yii::t('app', 'Balance') ?></a></th>
+                            <th><?= Yii::t('app', 'Category') ?></th>
+                            <th><?= Yii::t('app', 'Budgeted Value') .' '.$budgetedValueTooltip ?></th>
+                            <th><?= Yii::t('app', 'Actual Value') .' '. $actualValueTooltip ?></th>
+                            <th><?= Yii::t('app', 'Balance') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -78,12 +90,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th><a href="/budgeter/web/cashbook/index?sort=parent_category_id" data-sort="parent_category_id">Category</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=budgeted_value" data-sort="budgeted_value">Budgeted Value</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Actual Value</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Balance</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Total Savings</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Goal / Completed</a></th>
+                            <th><?= Yii::t('app', 'Category') ?></th>
+                            <th><?= Yii::t('app', 'Budgeted Value') ?></th>
+                            <th><?= Yii::t('app', 'Actual Value') ?></th>
+                            <th><?= Yii::t('app', 'Balance') ?></th>
+                            <th><?= Yii::t('app', 'Total Savings') ?></th>
+                            <th><?= Yii::t('app', 'Goal / Completed') ?></th>
                         </tr>
                     </thead>
                     <tbody>
