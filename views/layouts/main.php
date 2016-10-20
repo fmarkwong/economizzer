@@ -102,11 +102,11 @@ SCRIPT;
 
     <footer class="footer">
         <div class="container" align="center">
-            <?= Html::a('Micro Empire', 'http://www.micro-empire.org', ['target'=>'_blank']) ?> &copy; <?= date('Y') ?>  
+            <?= Html::a('Micro Empire Education', 'http://microempire-education.com/', ['target'=>'_blank']) ?> &copy; <?= date('Y') ?>  
             <!-- TODO:
             <?= Html::a('<i class="fa fa-twitter-square fa-lg"></i>', 'https://twitter.com/economizzer', ['target'=>'_blank']) ?> 
-            <?= Html::a('<i class="fa fa-facebook-square fa-lg"></i>', 'https://www.facebook.com/economizzer', ['target'=>'_blank']) ?>
             -->
+            <?= Html::a('<i class="fa fa-facebook-square fa-lg"></i>', 'https://www.facebook.com/buildyourmicroempire/', ['target'=>'_blank']) ?>
         </div>
     </footer>
 
