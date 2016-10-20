@@ -22,7 +22,7 @@ use yii\widgets\ActiveForm;
 				'template' => "{label}<div class=\"checkbox pull-left\">{input}</div>\n<div class=\"col-lg-7\">{error}</div>",
 			])->checkbox(['label' => Yii::t('app', 'Remember Me')]) ?>
 
-					<?= Html::submitButton(Yii::t('app', 'Login'), ['class' => 'btn btn-lg btn-primary btn-block']) ?>
+					<?= Html::submitButton(Yii::t('app', 'Login'), ['class' => 'btn btn-me btn-primary btn-block']) ?>
 		            <?= Html::a(Yii::t('app', 'Forgot password') . "?", ["/user/forgot"], array('class' => 'text-center new-account')) ?>
 
 			<?php ActiveForm::end(); ?>
