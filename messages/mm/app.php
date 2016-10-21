@@ -91,4 +91,5 @@ return [
     'October' => 'အောက်တိုဘာလ',
     'November' => '',
     'December' => '',
+    'Loan Amount' => 'အောက်တိုဘာလ',
 ];
