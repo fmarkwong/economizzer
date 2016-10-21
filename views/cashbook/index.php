@@ -83,8 +83,7 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
             </div> <!-- w1 gridview-->
         </div><!-- BUDGETS SECTION END -->
         <br>
-        <?php if ($savingsParentCategory): ?> <!-- SAVING GOALS SECTION -->
-        <div class="cashbook-index">
+        <div class="cashbook-index"> <!-- SAVING GOALS SECTION -->
             <div id="w1" class="grid-view">
                 <table class="table table-striped table-hover">
                     <thead>
@@ -129,8 +128,54 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                     </tbody>
                 </table> 
             </div> <!-- w1 gridview-->
-        </div>
-        <?php endif ?><!-- SAVING GOALS SECTION END -->
+        </div><!-- SAVING GOALS SECTION END -->
+        <br>
+        <div class="cashbook-index"> <!-- DEBT PAYMENT GOALS SECTION -->
+            <div id="w1" class="grid-view">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th><?= Yii::t('app', 'Category') ?></th>
+                            <th><?= Yii::t('app', 'Budgeted Value') ?></th>
+                            <th><?= Yii::t('app', 'Actual Value') ?></th>
+                            <th><?= Yii::t('app', 'Balance') ?></th>
+                            <th><?= Yii::t('app', 'Current Debt') ?></th>
+                            <th><?= Yii::t('app', 'Principal / Completed') ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+<?php 
+                        $parentDebtCategoryName = $debtParentCategory['desc_category']; 
+                        $currentDebtTotal = app\models\Account::getCurrentDebtTotal(); 
+                        $principalTotal = app\models\Account::getPrincipalTotal();  
+                        $category_balance = $debtParentCategory['budgeted_total'] - $debtParentCategory['actual_total'];
+                        $totalPercentageCompleted = ($PrincipalTotal > 0 ? ($currentDebtTotal / $PrincipalTotal) : 0);
+                        $formatter = Yii::$app->formatter;
+                        $totalPercentageCompleted = $formatter->asPercent($totalPercentageCompleted);
+                        echo $this->render('_debt_parent_category_row', compact('parentDebtCategoryName', 'debtParentCategory', 'category_balance', 'PrincipalTotal', 'totalPercentageCompleted', 'currentDebtTotal'));
+
+                        $sub_categories = app\models\Category::subCategories($debtParentCategory['id_category']); 
+                        foreach($sub_categories as $subCategory) {
+                            $categoryId    = $subCategory->id_category;
+                            $currentBudget = $subCategory->getCurrentBudget(); //TODO: add nullBudget object if not found so we don't have to keep checking for null below
+                            $budgetId      = $currentBudget ? $currentBudget->id: 0;
+                            $transaction   = $currentBudget ? $currentBudget->transaction : null;
+                            $transactionId = $transaction ? $transaction->id : null;
+                            $budgetedValue = $currentBudget ? $currentBudget->budgeted_value : 0;
+                            $actualValue   = $currentBudget ? $currentBudget->actual_value : 0;
+                            $subCategoryBalance = $budgetedValue - $actualValue;
+                            $totalSavings = $subCategory->totalSaving ? $subCategory->totalSaving->value : 0; 
+                            $savingsGoal = $subCategory->totalSaving ? $subCategory->totalSaving->goal : 0; 
+                            $percentageCompleted = $savingsGoal > 0 ? ($totalSavings / $savingsGoal) : 0;
+                            $percentageCompleted = $formatter->asPercent($percentageCompleted);
+                            
+                            echo $this->render('_debt_sub_category_row', compact('subCategory', 'subCategoryBalance', 'actualValue', 'budgetedValue', 'savingsGoal', 'percentageCompleted', 'categoryId', 'budgetId', 'transactionId', 'totalSavings'));
+                        }
+?>
+                    </tbody>
+                </table> 
+            </div> <!-- w1 gridview-->
+        </div> <!-- DEBT PAYMENT GOALS SECTION -->
         <br>
         <div class="cashbook-index">  <!-- TRANSACTIONS -->
             <h2>
@@ -140,17 +185,16 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                 <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Add').'', ['/transaction/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
             </h2>
             <hr/>
-
     <!-- TRANSACTIONS TABLE -->
 
             <div id="w1" class="grid-view">
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th><a href="/budgeter/web/cashbook/index?sort=parent_category_id" data-sort="parent_category_id">Date</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=budgeted_value" data-sort="budgeted_value">Description</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Category</a></th>
-                            <th><a href="/budgeter/web/cashbook/index?sort=value" data-sort="value">Value</a></th>
+                            <th><?= Yii::t('app', 'Data') ?></th>
+                            <th><?= Yii::t('app', 'Description') ?></th>
+                            <th><?= Yii::t('app', 'Category') ?></th>
+                            <th><?= Yii::t('app', 'Value') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -168,7 +212,6 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
         </div><!-- end transactions div-->
     </div><!-- col-sm-12 -->
 </div> <!-- row -->
-
 
 
     

@@ -44,6 +44,10 @@ class Account extends \yii\db\ActiveRecord
         ];
     }
 
+
+/**
+ *  Savings Goals
+ */
     public function getTotalSaving()
     {
         return $this->hasMany(TotalSaving::className(), ['account_id' => 'id']);
@@ -57,6 +61,24 @@ class Account extends \yii\db\ActiveRecord
     public static function getTotalSavingGoal()
     {
         return self::currentAccount()->getTotalSaving()->sum('goal');
+    }
+
+/**
+ * Debt Payment Goals
+ */
+    public function getDebt()
+    {
+        return $this->hasMany(Debt::className(), ['account_id' => 'id']);
+    }
+
+    public static function getCurrentDebtTotal()
+    {
+        return self::currentAccount()->getDebt()->sum('value');
+    }
+
+    public static function getPrincipalTotal()
+    {
+        return self::currentAccount()->getDebt()->sum('principal');
     }
 
     /**
