@@ -27,7 +27,8 @@ class CategorySearch extends Category
     {
         $query = Category::find();
 
-        $query->where(['not in','desc_category', ['Savings Goals', 'Debt', 'Income']]);
+        // these three parent categories are permanent, so we hide them in category/index so users can't edit/delete
+        $query->where(['not in','desc_category', ['Savings Goals', 'Debt Payment Goals', 'Income']]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
