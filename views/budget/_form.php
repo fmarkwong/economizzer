@@ -55,8 +55,7 @@ use kartik\widgets\DatePicker;
         }
     ?>
 
-    <?php if (!$showSavingsGoalField) echo $form->field($budget, 'budgeted_value')->textInput(['size' => 10]) ?>
-    <?php //if ($showSavingsGoalField) echo $form->field($budget, 'savings_goal')->textInput(['size' => 10]) ?>
+    <?php if (!$showSavingsGoalField && !$showDebtTotalField) echo $form->field($budget, 'budgeted_value')->textInput(['size' => 10]) ?>
     <?php if ($showSavingsGoalField): ?>
         <div class="form-group field-savings-goal"> 
             <label class="col-lg-2 control-label" for="savings-goal">Savings Goal</label>
@@ -67,6 +66,15 @@ use kartik\widgets\DatePicker;
         </div> 
     <?php endif ?>
 
+    <?php if ($showDebtTotalField): ?>
+        <div class="form-group field-savings-goal"> 
+            <label class="col-lg-2 control-label" for="savings-goal">Total Debt</label>
+            <div class="col-lg-4">
+                <?= Html::textInput('debt-total', null, ['id' => 'debt-total', 'class' => 'form-control', 'size' => 10]) ?>
+            </div>
+            <div class="col-lg-7"><div class="help-block"></div></div>
+        </div> 
+    <?php endif ?>
 
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">

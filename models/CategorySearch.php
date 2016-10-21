@@ -27,6 +27,8 @@ class CategorySearch extends Category
     {
         $query = Category::find();
 
+        $query->where(['not in','desc_category', ['Savings Goals', 'Debt', 'Income']]);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [

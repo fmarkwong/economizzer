@@ -15,7 +15,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['budgeted_total', 'actual_total', 'type_id'], 'number'],
-            [['desc_category', 'is_active'], 'required'],
+            [['desc_category'], 'required'],
             [['is_active','user_id','parent_id'], 'integer'],
             [['desc_category', 'hexcolor_category', 'parent_or_sub'], 'string', 'max' => 45]
         ];
@@ -30,7 +30,7 @@ class Category extends \yii\db\ActiveRecord
             'actual_total' => Yii::t('app', 'Total Actual Total'),
             'desc_category' => Yii::t('app', 'Name'),
             'hexcolor_category' => Yii::t('app', 'Color'),
-            'parent_id' => Yii::t('app', 'Parent Category'),
+            'parent_id' => Yii::t('app', ''),
             'is_active' => Yii::t('app', 'Active'),
         ];
     }
@@ -190,7 +190,7 @@ SQL;
                                   'type' => 2,
                                   'sub_categories' => ['Auto Maintenance', 'Home Maintenance', 'Insurance', 'Medical', 'Clothing', 'Gifts', 'Giving', 'Stuff I forgot to budget for'],
                               ],
-                          'Savings' =>
+                          'Savings Goals' =>
                               [
                                   'type' => 2,
                                   'sub_categories' => ['House Down Payment', 'Refrigerator'],

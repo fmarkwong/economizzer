@@ -2,15 +2,8 @@
 
 use yii\helpers\Html;
 
-$this->title = Yii::t('app', 'Update', [
-    'modelClass' => 'Category',
-]) . ' ' . $model->desc_category;
+$this->title = Yii::t('app', "Update $model->desc_category Category");
 
-$js = "$('.field-category-parent_or_sub').hide();";
-
-if ($model->parent_or_sub === 'sub') {
-    $js .= "$('.field-category-type_id').hide();";
-}
 ?>
 <div class="category-update">
 
@@ -19,7 +12,8 @@ if ($model->parent_or_sub === 'sub') {
 
     <?= $this->render('_form', [
         'model' => $model,
-        'js'    => $js,
+        'showParentOrSubRadioList' => false,
+        'showParentCategoryDropDown' => $model->parent_or_sub == 'sub',
+        'js' => null, 
     ]) ?>
-
 </div>

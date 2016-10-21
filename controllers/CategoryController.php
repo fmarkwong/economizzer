@@ -56,10 +56,15 @@ class CategoryController extends BaseController
     {
         $model = new Category();
         $model->user_id = Yii::$app->user->identity->id;
+        $model->is_active = 1;
+        $model->type_id = 1;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash("Category-success", Yii::t("app", "Category successfully included"));
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->parent_or_sub == 'parent') $model->parent_id = null;
+            if ($model->save()) { 
+                Yii::$app->session->setFlash("Category-success", Yii::t("app", "Category successfully included"));
+                return $this->redirect(['index']);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,

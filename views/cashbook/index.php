@@ -83,8 +83,7 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
             </div> <!-- w1 gridview-->
         </div><!-- BUDGETS SECTION END -->
         <br>
-        <?php if ($savingsCategory): ?> <!-- SAVING GOALS SECTION -->
-                <?php //echo Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/budget/new-savings'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
+        <?php if ($savingsParentCategory): ?> <!-- SAVING GOALS SECTION -->
         <div class="cashbook-index">
             <div id="w1" class="grid-view">
                 <table class="table table-striped table-hover">
@@ -100,18 +99,16 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                     </thead>
                     <tbody>
 <?php 
-                    foreach($savingsCategory as $category) {
-                        $parent_category = $category['desc_category']; 
-                        $sub_categories = app\models\Category::subCategories($category['id_category']); 
-                        $totalSavingsTotal = app\models\Account::getTotalSavingTotal(); 
-                        // $totalSavingsGoal = $category['savings_goal_total'];
-                        $totalSavingsGoal = app\models\Account::getTotalSavingGoal();  
-                        $category_balance = $category['budgeted_total'] - $category['actual_total'];
-                        $totalPercentageCompleted = ($totalSavingsGoal > 0 ? ($totalSavingsTotal / $totalSavingsGoal) : 0);
+                        $parentSavingsCategoryName = $savingsParentCategory['desc_category']; 
+                        $SavingsTotal = app\models\Account::getTotalSavingTotal(); 
+                        $SavingsGoal = app\models\Account::getTotalSavingGoal();  
+                        $category_balance = $savingsParentCategory['budgeted_total'] - $savingsParentCategory['actual_total'];
+                        $totalPercentageCompleted = ($SavingsGoal > 0 ? ($SavingsTotal / $SavingsGoal) : 0);
                         $formatter = Yii::$app->formatter;
                         $totalPercentageCompleted = $formatter->asPercent($totalPercentageCompleted);
-                        echo $this->render('_savings_parent_category_row', compact('parent_category', 'category', 'category_balance', 'totalSavingsGoal', 'totalPercentageCompleted', 'totalSavingsTotal'));
+                        echo $this->render('_savings_parent_category_row', compact('parentSavingsCategoryName', 'savingsParentCategory', 'category_balance', 'SavingsGoal', 'totalPercentageCompleted', 'SavingsTotal'));
 
+                        $sub_categories = app\models\Category::subCategories($savingsParentCategory['id_category']); 
                         foreach($sub_categories as $subCategory) {
                             $categoryId    = $subCategory->id_category;
                             $currentBudget = $subCategory->getCurrentBudget(); //TODO: add nullBudget object if not found so we don't have to keep checking for null below
@@ -122,21 +119,18 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                             $actualValue   = $currentBudget ? $currentBudget->actual_value : 0;
                             $subCategoryBalance = $budgetedValue - $actualValue;
                             $totalSavings = $subCategory->totalSaving ? $subCategory->totalSaving->value : 0; 
-                            // $savingsGoal = $currentBudget ? $currentBudget->savings_goal : 0;
                             $savingsGoal = $subCategory->totalSaving ? $subCategory->totalSaving->goal : 0; 
-                            // $percentageCompleted = $savingsGoal > 0 ? ($totalSavings / $savingsGoal) * 100 : 0;
                             $percentageCompleted = $savingsGoal > 0 ? ($totalSavings / $savingsGoal) : 0;
                             $percentageCompleted = $formatter->asPercent($percentageCompleted);
                             
                             echo $this->render('_savings_sub_category_row', compact('subCategory', 'subCategoryBalance', 'actualValue', 'budgetedValue', 'savingsGoal', 'percentageCompleted', 'categoryId', 'budgetId', 'transactionId', 'totalSavings'));
                         }
-                    } 
 ?>
                     </tbody>
                 </table> 
             </div> <!-- w1 gridview-->
-        </div><!-- SAVING GOALS SECTION END -->
-        <?php endif ?>
+        </div>
+        <?php endif ?><!-- SAVING GOALS SECTION END -->
         <br>
         <div class="cashbook-index">  <!-- TRANSACTIONS -->
             <h2>

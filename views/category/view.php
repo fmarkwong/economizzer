@@ -28,21 +28,22 @@ $this->title = $model->desc_category;
         'model' => $model,
         'attributes' => [
             'desc_category',
+            // [
+            // 'attribute' => 'hexcolor_category',
+            // 'format' => 'raw',
+            // 'value' => '<strong style="color:'.$model->hexcolor_category.'"><i class="fa fa-tag"></i></strong>',
+            // ],
             [
-            'attribute' => 'hexcolor_category',
-            'format' => 'raw',
-            'value' => '<strong style="color:'.$model->hexcolor_category.'"><i class="fa fa-tag"></i></strong>',
+                'label' => 'Parent Category',
+                'attribute' => 'parent_id',
+                'format' => 'raw',
+                'value' => $model->parent,
             ],
-            [
-            'attribute' => 'parent_id',
-            'format' => 'raw',
-            'value' => $model->parent ? $model->parent->desc_category : '<span class="text-danger"><em>Nenhum</em></span>',
-            ],
-            [
-            'attribute' => 'is_active',
-            'format' => 'raw',
-            'value' => $model->is_active == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
-            ],
+            // [
+            // 'attribute' => 'is_active',
+            // 'format' => 'raw',
+            // 'value' => $model->is_active == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
+            // ],
         ],
     ]) ?>
 

@@ -5,6 +5,8 @@ use yii\helpers\Html;
 $this->title = Yii::t('app', 'Create category', [
     'modelClass' => 'Category',
 ]);
+
+$js = "$('.field-parent-category-form').hide();";
 ?>
 <div class="category-create">
 
@@ -15,7 +17,9 @@ $this->title = Yii::t('app', 'Create category', [
     <?php $model->parent_id = null; //default value ?>
     <?= $this->render('_form', [
         'model' => $model,
-        'js'    => null,
+        'showParentOrSubRadioList' => true,
+        'showParentCategoryDropDown' => true, 
+        'js' => $js, 
     ]) ?>
 
 </div>

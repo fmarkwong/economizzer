@@ -77,7 +77,7 @@ class TransactionController extends BaseController
         } elseif ($transaction->category->type->desc_type === 'Expense') {
             $transaction->account->balance -= $transaction->value;
             $currentBudget->actual_value += (float)$transaction->value;
-            if ($currentBudget->category->parent->desc_category === 'Savings') {
+            if ($currentBudget->category->parent->desc_category === 'Savings Goals') {
                 if (!$transaction->category->totalSaving) {
                     $totalSavings = new TotalSaving();
                     $totalSavings->value += (float)$transaction->value;

@@ -69,7 +69,7 @@ use kartik\widgets\DatePicker;
         }
         ?>
 
-        <?= $form->field($transaction, 'value')->textInput(['size' => 10]) ?>
+        <?= $form->field($transaction, 'value')->hint(0)->textInput(['size' => 10, 'value' => '']) ?>
         <?= $form->field($transaction, 'description')->textInput(['maxlength' => 100]) ?>
 
         </div>
