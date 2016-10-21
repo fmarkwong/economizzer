@@ -50,6 +50,11 @@ class Category extends \yii\db\ActiveRecord
        return $this->hasOne(TotalSaving::className(), ['category_id' => 'id_category']); 
     } 
 
+    public function getDebt() 
+    { 
+       return $this->hasOne(Debt::className(), ['category_id' => 'id_category']); 
+    } 
+
     // public static function getHierarchy($exclude_income = false) {
     public static function getHierarchy($categories = null) {
         $options = [];
@@ -204,6 +209,11 @@ SQL;
                               [
                                   'type' => 2,
                                   'sub_categories' => ['House Down Payment', 'Refrigerator'],
+                              ],
+                          'Debt Payment Goals' =>
+                              [
+                                  'type' => 2,
+                                  'sub_categories' => ['Business Loan', 'Home Loan'],
                               ],
                           // 'Other' => 
                           //     [

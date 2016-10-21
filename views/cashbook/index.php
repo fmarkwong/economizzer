@@ -92,7 +92,7 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                             <th><?= Yii::t('app', 'Budgeted Value') ?></th>
                             <th><?= Yii::t('app', 'Actual Value') ?></th>
                             <th><?= Yii::t('app', 'Balance') ?></th>
-                            <th><?= Yii::t('app', 'Total Savings') ?></th>
+                            <th><?= Yii::t('app', 'Current Savings') ?></th>
                             <th><?= Yii::t('app', 'Goal / Completed') ?></th>
                         </tr>
                     </thead>
@@ -149,10 +149,11 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                         $currentDebtTotal = app\models\Account::getCurrentDebtTotal(); 
                         $principalTotal = app\models\Account::getPrincipalTotal();  
                         $category_balance = $debtParentCategory['budgeted_total'] - $debtParentCategory['actual_total'];
-                        $totalPercentageCompleted = ($PrincipalTotal > 0 ? ($currentDebtTotal / $PrincipalTotal) : 0);
+                        // $totalPercentageCompleted = ($principalTotal > 0 ? ($currentDebtTotal / $principalTotal) : 0);
+                        $totalPercentageCompleted = ($principalTotal > 0 ? ($principalTotal - $currentDebtTotal) / $principalTotal : 0);
                         $formatter = Yii::$app->formatter;
                         $totalPercentageCompleted = $formatter->asPercent($totalPercentageCompleted);
-                        echo $this->render('_debt_parent_category_row', compact('parentDebtCategoryName', 'debtParentCategory', 'category_balance', 'PrincipalTotal', 'totalPercentageCompleted', 'currentDebtTotal'));
+                        echo $this->render('_debt_parent_category_row', compact('parentDebtCategoryName', 'debtParentCategory', 'category_balance', 'principalTotal', 'totalPercentageCompleted', 'currentDebtTotal'));
 
                         $sub_categories = app\models\Category::subCategories($debtParentCategory['id_category']); 
                         foreach($sub_categories as $subCategory) {
@@ -164,12 +165,13 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                             $budgetedValue = $currentBudget ? $currentBudget->budgeted_value : 0;
                             $actualValue   = $currentBudget ? $currentBudget->actual_value : 0;
                             $subCategoryBalance = $budgetedValue - $actualValue;
-                            $totalSavings = $subCategory->totalSaving ? $subCategory->totalSaving->value : 0; 
-                            $savingsGoal = $subCategory->totalSaving ? $subCategory->totalSaving->goal : 0; 
-                            $percentageCompleted = $savingsGoal > 0 ? ($totalSavings / $savingsGoal) : 0;
+                            $currentDebt = $subCategory->debt ? $subCategory->debt->current_value : 0; 
+                            $principal = $subCategory->debt ? $subCategory->debt->principal : 0; 
+                            // $percentageCompleted = $principal > 0 ? ($currentDebt / $principal) : 0;
+                            $percentageCompleted = $principal > 0 ? ($principal - $currentDebt) / $principal : 0;
                             $percentageCompleted = $formatter->asPercent($percentageCompleted);
                             
-                            echo $this->render('_debt_sub_category_row', compact('subCategory', 'subCategoryBalance', 'actualValue', 'budgetedValue', 'savingsGoal', 'percentageCompleted', 'categoryId', 'budgetId', 'transactionId', 'totalSavings'));
+                            echo $this->render('_debt_sub_category_row', compact('subCategory', 'subCategoryBalance', 'actualValue', 'budgetedValue', 'principal', 'percentageCompleted', 'categoryId', 'budgetId', 'transactionId', 'currentDebt'));
                         }
 ?>
                     </tbody>

@@ -6,6 +6,7 @@ use Yii;
 use app\models\Transaction;
 use app\models\Category;
 use app\models\TotalSaving;
+use app\models\Debt;
 
 class TransactionController extends BaseController
 {
@@ -92,7 +93,22 @@ class TransactionController extends BaseController
                     // $transaction->category->totalSaving->category_id = $transaction->category->id_category;
                     $transaction->category->totalSaving->save();
                 }
-            }
+            } elseif ($currentBudget->category->parent->desc_category === 'Debt Payment Goals') {
+                if (!$transaction->category->debt) {
+                    $debt = new Debt();
+                    $debt->current_value -= (float)$transaction->value;
+                    $debt->category_id = $transaction->category->id_category;
+                    $debt->link('account', $transaction->account);
+                } else {
+                    // $transaction->account->totalSaving->value += (float)$transaction->value;
+                    // $transaction->account->totalSaving->category_id = $transaction->category->id_category;
+                    // $transaction->account->totalSaving->save();
+                    $transaction->category->debt->current_value -= (float)$transaction->value;
+                    $transaction->category->debt->account_id = $transaction->account->id;
+                    // $transaction->category->totalSaving->category_id = $transaction->category->id_category;
+                    $transaction->category->debt->save();
+                }
+            } // elseif debt
         } else {
             throw new Exception("Category Type Error");
         }

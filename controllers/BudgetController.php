@@ -7,6 +7,7 @@ use app\models\Budget;
 use app\models\Category;
 use app\models\Account;
 use app\models\TotalSaving;
+use app\models\Debt;
 
 
 class BudgetController extends \yii\web\Controller
@@ -66,7 +67,7 @@ class BudgetController extends \yii\web\Controller
             $budget = $existingBudget ? $existingBudget->incrementBudgetedValue($budget->budgeted_value) : $budget;
             if ($budget->save() && $account->save()) {
                 $this->saveSavingsGoal($budget, $account);
-                $this->saveDebtTotal($budget, $account);
+                $this->savePrincipal($budget, $account);
                 Yii::$app->session->setFlash("Entry-success", Yii::t("app", "Entry successfully included"));
                 return $this->redirect(['/cashbook/index']);
             } else {
@@ -90,7 +91,7 @@ class BudgetController extends \yii\web\Controller
             // $budget->incrementBudgetedValue($budget->budgeted_value);
             if ($budget->save() && $account->save()) {
                 $this->saveSavingsGoal($budget, $account);
-                $this->saveDebtTotal($budget, $account);
+                $this->savePrincipal($budget, $account);
                 Yii::$app->session->setFlash("Entry-success", Yii::t("app", "Entry successfully included"));
                 return $this->redirect(['/cashbook/index']);
             } else {
@@ -99,21 +100,24 @@ class BudgetController extends \yii\web\Controller
         } 
     }
 
-    private function saveDebtTotal($budget, $account)
+    private function savePrincipal($budget, $account)
     {
         $debtTotalExists = isset(Yii::$app->request->post()['debt-total']);
         if (!$debtTotalExists) return;
 
-        $debtTotal = Yii::$app->request->post()['debt-total'];
-        if ($budget->category->Debt) {
-            $budget->category->Debt->total = $debtTotal;
-            $budget->category->Debt->account_id = $account->id;
-            $budget->category->Debt->save();
+        $newPrincipal = Yii::$app->request->post()['debt-total'];
+        if ($budget->category->debt) {
+            $principalChange = $newPrincipal - $budget->category->debt->principal;
+            $budget->category->debt->current_value += $principalChange;
+            $budget->category->debt->principal = $newPrincipal;
+            $budget->category->debt->account_id = $account->id;
+            $budget->category->debt->save();
         } else {
-            $totalDebt = new TotalDebt();
-            $totalDebt->total = $debtTotal;
-            $totalDebt->account_id = $account->id;
-            $totalDebt->link('category', $budget->category);
+            $debt = new Debt();
+            $debt->principal = $newPrincipal;
+            $debt->current_value = $newPrincipal;
+            $debt->account_id = $account->id;
+            $debt->link('category', $budget->category);
         }
     }
     

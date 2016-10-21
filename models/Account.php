@@ -73,7 +73,7 @@ class Account extends \yii\db\ActiveRecord
 
     public static function getCurrentDebtTotal()
     {
-        return self::currentAccount()->getDebt()->sum('value');
+        return self::currentAccount()->getDebt()->sum('current_value');
     }
 
     public static function getPrincipalTotal()

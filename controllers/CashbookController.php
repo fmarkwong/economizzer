@@ -55,7 +55,7 @@ class CashbookController extends BaseController
         $year  = $session['year'];
 
         $totalLeftToBudget = Account::getTotalLeftToBudget();
-        $categories = Category::categories(null, ['Savings Goals', 'Income']);
+        $categories = Category::categories(null, ['Savings Goals','Debt Payment Goals', 'Income']);
         $savingsParentCategory = Category::categories(['Savings Goals'])[0];
         $debtParentCategory = Category::categories(['Debt Payment Goals'])[0];
         $accountBalance = Account::balance();
@@ -65,7 +65,7 @@ class CashbookController extends BaseController
             'totalLeftToBudget',
             'categories',
             'savingsParentCategory',
-            'DebtParentCategory',
+            'debtParentCategory',
             'accountBalance',
             'transactions',
             'month',

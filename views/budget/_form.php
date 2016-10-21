@@ -68,7 +68,7 @@ use kartik\widgets\DatePicker;
 
     <?php if ($showDebtTotalField): ?>
         <div class="form-group field-savings-goal"> 
-            <label class="col-lg-2 control-label" for="savings-goal">Total Debt</label>
+            <label class="col-lg-2 control-label" for="debt-total">Principal</label>
             <div class="col-lg-4">
                 <?= Html::textInput('debt-total', null, ['id' => 'debt-total', 'class' => 'form-control', 'size' => 10]) ?>
             </div>
