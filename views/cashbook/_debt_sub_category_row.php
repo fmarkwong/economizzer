@@ -15,5 +15,5 @@ $updateActualValueLink = Html::a($actualValue, [$transactionUrl, 'id' => $transa
     <td style="text-align:left;padding-left: 2.5em"><?=$updateActualValueLink?></td>
     <td style="text-align:left;padding-left: 1.5em"><strong id="balance-category-id-<?=$subCategory->id_category?>" style='color: <?= CashbookHelper::color($subCategoryBalance)?>'><?=$subCategoryBalance?></strong></td>
     <td style="text-align:left;padding-left: 3em"><strong style='color: <?= 0 ?>'><?=$currentDebt?></strong></td>
-    <td style="text-align:left;padding-left: 1.5em"><strong style='color: <?= 0 ?>'><?="$updatePrincipalLink / $percentageCompleted"?></strong></td>
+    <td style="text-align:left;padding-left: 4em"><strong style='color: <?= 0 ?>'><?="$updatePrincipalLink / $percentageCompleted"?></strong></td>
 </tr>
