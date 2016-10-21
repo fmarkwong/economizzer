@@ -168,6 +168,15 @@
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
     }
 
+    var monthDiff  = function(d1, d2) {
+        var months;
+        months = (d2.getFullYear() - d1.getFullYear()) * 12;
+        months -= d1.getMonth() + 1;
+        months += d2.getMonth();
+        return months <= 0 ? 0 : months;
+    }
+
+
     // GET FIELD
     // A function just for grabbing the value from a particular field.
     // We need this because if the field doesn't exist, the plugin will
@@ -190,6 +199,11 @@
         // calculator doesn't write the field to the form div since we
         // don't need it to.
         if ( typeof( field ) !== "string" ) {
+            if (name == 'term' && options.dateTerm)  {
+                var now = new Date()
+                var selectedDate = new Date(field.val());
+                return monthDiff(now, selectedDate); 
+            }
             return field.val();
         }
 
@@ -197,14 +211,24 @@
             return false;
         }
 
+
         // If we've gotten here, no fields were found that match the
         // criteria. Create the form field and return the default value.
-        elem.find(".form").append(
-            '<div class="accrue-field-'+name+'">'+
-                '<p><label>'+options.field_titles[name]+':</label>'+
-                '<input type="text" class="'+name+'" value="'+options.default_values[name]+'" />'+
-                ( options.field_comments[name].length>0 ? "<small>"+options.field_comments[name]+"</small>" : '' )+'</p>'+
-            '</div>');
+        if ( name == "term" && options.dateTerm ) {
+            elem.find(".form").append(
+                '<div id="term-date-picker" class="accrue-field-'+name+'">'+
+                    '<p><label>'+options.field_titles[name]+':</label>'+
+                    '<input type="text" class="'+name+' form-control" value="'+options.default_values[name]+'" />'+
+                    ( options.field_comments[name].length>0 ? "<small>"+options.field_comments[name]+"</small>" : '' )+'</p>'+
+                '</div>');
+        } else {
+            elem.find(".form").append(
+                '<div class="accrue-field-'+name+'">'+
+                    '<p><label>'+options.field_titles[name]+':</label>'+
+                    '<input type="text" class="'+name+'" value="'+options.default_values[name]+'" />'+
+                    ( options.field_comments[name].length>0 ? "<small>"+options.field_comments[name]+"</small>" : '' )+'</p>'+
+                '</div>');
+        }
         return elem.find("."+name).val();
 
     };
@@ -413,10 +437,12 @@
             term = ( typeof( input.term )!=="undefined" ? input.term : 0 );
 
         // parse year values passed into the term value
-        if ( term.match("y") ) {
-            term = parseInt( term.replace(/[^\d.]/ig, ''), 10 )*12;
-        } else {
-            term = parseInt( term.replace(/[^\d.]/ig, ''), 10 );
+        if (typeof term != 'number') {
+            if ( term.match("y") ) {
+                term = parseInt( term.replace(/[^\d.]/ig, ''), 10 )*12;
+            } else {
+                term = parseInt( term.replace(/[^\d.]/ig, ''), 10 );
+            }
         }
 
         // process the input values
