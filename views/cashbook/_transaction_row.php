@@ -2,6 +2,6 @@
     <td style="text-align:left"><span style="color:"><?= $transaction->date ?></span></td>
     <td style="text-align:left"><?=$transaction->description?></td>
     <td style="text-align:left"><?="$parent_category_desc/$category_desc"?></td>
-    <td style="text-align:left"><?=$transaction->value?></td>
+    <td style="text-align:left"><?= $plusMinus . $transaction->value?></td>
 </tr>
 

@@ -13,15 +13,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
 function Tip($text) {
      return Html::tag('i', '', [
-                'title'=> $text . '.',
+                'title'=> $text,
                 'data-toggle'=>'tooltip',
                 'style'=>'cursor:pointer;',
                 'class'=>'fa fa-question-circle',
             ]);
 }
 
+$tip = Tip(Yii::t('app', "Instructions"));
+
 $budgetedValueTooltip = Tip(Yii::t('app', "Enter how much you plan to spend in each category for the month"));
 $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category, record it here"));
+$savingsGoalTip = Tip(Yii::t('app', "Enter your amounts for each saving goal here"));
+$savingsBudgetedValueTip = Tip(Yii::t('app', "Enter how much you plan to save this month for each category"));
+$savingsActualValueTip = Tip(Yii::t('app', "Each time you set aside money for a goal, record it here"));
+$debtBudgetedValueTip = Tip(Yii::t('app', "Enter how much you plan to pay down debt this month for each category"));
+$debtActualValueTip = Tip(Yii::t('app', "Each time you pay down debt for a category, record it here"));
+$debtPrincipalTip = Tip(Yii::t('app', "Enter the total principal for each debt here"));
 ?>
 
 <div class="row">
@@ -30,7 +38,7 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
         <h2 class="month-picker"><?= Yii::t('app', $month) . " $year"?></h2>
         <?= Html::a(null, ['/cashbook/next-month'], ['class' => 'glyphicon glyphicon-circle-arrow-right']) ?>
     </div>
-</div> <!-- row -->
+</div> 
 
 <div class="row">
     <div class="col-sm-16">
@@ -43,6 +51,8 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                 <?php //echo Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/budget/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
             </h2>
             <div style='float:right; font-size: 1.1em'><?= Yii::t('app', 'Add or update values by clicking on the value') ?>.</div>
+            <div style="clear: both"></div>
+            <div style='float:right; font-size: 1.1em'><?= Yii::t('app', 'Hover over question marks') . " $tip " . Yii::t('app', 'to see instructions')  ?>.</div>
             <br>
             <hr>
 
@@ -89,11 +99,11 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                     <thead>
                         <tr>
                             <th><?= Yii::t('app', 'Category') ?></th>
-                            <th><?= Yii::t('app', 'Budgeted Value') ?></th>
-                            <th><?= Yii::t('app', 'Actual Value') ?></th>
+                            <th><?= Yii::t('app', 'Budgeted Value') . ' ' . $savingsBudgetedValueTip ?></th>
+                            <th><?= Yii::t('app', 'Actual Value') . ' ' . $savingsActualValueTip ?></th>
                             <th><?= Yii::t('app', 'Balance') ?></th>
                             <th><?= Yii::t('app', 'Current Savings') ?></th>
-                            <th><?= Yii::t('app', 'Goal / Completed') ?></th>
+                            <th><?= Yii::t('app', 'Goal ' . $savingsGoalTip . ' / Completed') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,11 +146,11 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                     <thead>
                         <tr>
                             <th><?= Yii::t('app', 'Category') ?></th>
-                            <th><?= Yii::t('app', 'Budgeted Value') ?></th>
-                            <th><?= Yii::t('app', 'Actual Value') ?></th>
+                            <th><?= Yii::t('app', 'Budgeted Value') . ' ' . $debtBudgetedValueTip ?></th>
+                            <th><?= Yii::t('app', 'Actual Value') . ' ' . $debtActualValueTip ?></th>
                             <th><?= Yii::t('app', 'Balance') ?></th>
                             <th><?= Yii::t('app', 'Current Debt') ?></th>
-                            <th><?= Yii::t('app', 'Principal / Completed') ?></th>
+                            <th><?= Yii::t('app', 'Principal ' . $debtPrincipalTip . ' / Completed') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -177,14 +187,14 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
                     </tbody>
                 </table> 
             </div> <!-- w1 gridview-->
-        </div> <!-- DEBT PAYMENT GOALS SECTION -->
+        </div> <!-- END DEBT PAYMENT GOALS SECTION -->
         <br>
         <div class="cashbook-index">  <!-- TRANSACTIONS -->
             <h2>
                 <span>Account</span>
                 <?php $account_balance_color = cashBookHelper::balanceColor($accountBalance) ?>
                 <span style="color: <?=$account_balance_color?>; font-size: 20px; vertical-align: middle"> Balance: <?= $accountBalance ?></span>
-                <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Add').'', ['/transaction/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
+                <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Add Income').'', ['/transaction/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
             </h2>
             <hr/>
     <!-- TRANSACTIONS TABLE -->
@@ -203,9 +213,10 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
 <?php 
                     foreach($transactions as $transaction) {
                         $category = $transaction->category;
+                        $plusMinus = $category->type_id == 1 ? '+' : '-';
                         $category_desc = $category->desc_category;
                         $parent_category_desc = $category->getParent() ? $category->getParent()->one()->desc_category : NULL;
-                        echo $this->render('_transaction_row', compact('transaction', 'category_desc', 'parent_category_desc'));
+                        echo $this->render('_transaction_row', compact('plusMinus', 'transaction', 'category_desc', 'parent_category_desc'));
                     } 
 ?>
                     </tbody>
@@ -214,164 +225,3 @@ $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category
         </div><!-- end transactions div-->
     </div><!-- col-sm-12 -->
 </div> <!-- row -->
-
-
-    
-<?php 
-/*   OLD GRID CODE FOR REFERENCE TODO:
-GridView::widget([
-        'dataProvider' => $dataProvider,
-        'tableOptions' => ['class'=>'table table-striped table-hover'],
-        'emptyText'    => '</br><p class="text-danger">'.Yii::t('app', 'No entries found!').'</p>',
-        'summary'      =>  '',
-        'showFooter'   => true,
-        'showOnEmpty'  => false,
-        'footerRowOptions'=>['style'=>'font-weight:bold;'],
-        'rowOptions'   => function ($model, $index, $widget, $grid) {
-                return [
-                    'id' => $model['id'], 
-                    'onclick' => 'location.href="'
-                        . Yii::$app->urlManager->createUrl('cashbook/') 
-                        . '/"+(this.id);',
-                    'style' => "cursor: pointer",
-                ];
-        },        
-        'columns'    => [
-            [
-            'attribute' => 'date',
-            'enableSorting' => true,
-            'value' => function ($model) {                      
-                    return $model->date <> '' ? Yii::$app->formatter->asDate($model->date, 'short') : Yii::$app->formatter->asDate($model->date, 'short');
-                    },
-            // 'contentOptions'=>['style'=>'width: 15%;text-align:left'],
-            'contentOptions'=>['style'=>'text-align:left'],
-            'footer' => 'Total',
-            ],
-            // Parent Category
-            [
-            'attribute' => 'parent_category_id',
-            'format' => 'raw',
-            'enableSorting' => true,
-            'value' => function ($model) {                      
-                    return '<span style="color:'.$model->category->hexcolor_category.'">'.$model->getParentCategory()->desc_category.'</span>';
-                    },
-            // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
-            'contentOptions'=>['style'=>'text-align:left'],
-            'footerOptions' => ['style'=>'text-align:left'],                  
-            ],
-            //sub category
-            [
-            'attribute' => 'category_id',
-            'format' => 'raw',
-            'enableSorting' => true,
-            'value' => function ($model) {                      
-                    return '<span style="color:'.$model->category->hexcolor_category.'">'.$model->category->desc_category.'</span>';
-                    },
-            // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
-            'contentOptions'=>['style'=>'text-align:left'],
-            'footerOptions' => ['style'=>'text-align:left'],                  
-            ],
-            [
-            'attribute' => 'description',
-            'format' => 'raw',
-            'enableSorting' => true,
-            'value' => function ($model) {                      
-                           return $model->description; 
-                    },
-            // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
-            'contentOptions'=>['style'=>'text-align:left'],
-            'footerOptions' => ['style'=>'text-align:left'],                  
-            ],
-            [
-            'label' => 'Budgeted Value',
-            'attribute' => 'budgeted_value',
-            'format' => 'raw',
-            'enableSorting' => true,
-            'value' => function ($model) {                      
-                        return $model->budgeted_value;
-                    },
-            // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
-            'contentOptions'=>['style'=>'text-align:left'],
-             'footer' => Cashbook::pageTotal($dataProvider->models,'budgeted_value'),
-            'footerOptions' => ['style'=>'text-align:left'],                  
-            ],
-            [
-             'label' => 'Actual Value',
-             'attribute' => 'value',
-             'format' => 'raw',
-             'value' => function ($model) {  
-                    return $model->is_pending === 0 ? $model->value : '<span class="glyphicon glyphicon-flag" style="color:orange" aria-hidden="true"></span> <strong style="color:'.$model->type->hexcolor_type.'">'.' '.$model->value.'</strong>';
-                    },
-             'enableSorting' => true,
-            'contentOptions'=>['style'=>'text-align:left'],
-             // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
-             'footer' => Cashbook::pageTotal($dataProvider->models,'value'),
-             'footerOptions' => ['style'=>'text-align:left'],
-            ],
-            [
-             'label' => 'Balance',
-             'attribute' => 'value',
-             'format' => 'raw',
-             'value' => function ($cash_book) {  
-                        if ($cash_book->type_id == 1 ) // income
-                            $value = $cash_book->value - $cash_book->budgeted_value;
-                        else // expense
-                            $value = $cash_book->budgeted_value - $cash_book->value;
-                        $color = Cashbook::footerColor($value);
-                        return "<strong style='color: $color'>" . $value . '</strong>';
-                    },
-             'enableSorting' => true,
-             // 'contentOptions'=>['style'=>'width: 20%;text-align:left'],
-            'contentOptions'=>['style'=>'text-align:left'],
-             'footer' => Cashbook::pageTotal($dataProvider->models,'budgeted_value') - Cashbook::pageTotal($dataProvider->models,'value'),
-             'footerOptions' => ['style'=>'text-align:left;color:' . Cashbook::footerColor(Cashbook::pageTotal($dataProvider->models,'budgeted_value') - Cashbook::pageTotal($dataProvider->models,'value'))],
-            ],
-        ],
-    ]);
-     ?>
-     <hr/>
-     <div class="pull-left">
-          <?php
-          use kartik\export\ExportMenu;
-              $gridColumns = [
-                  ['attribute'=>'date','format'=>['date'], 'hAlign'=>'right', 'width'=>'110px'],  
-              [
-                  'attribute'=>'category_id',
-                  'label'=> Yii::t('app', 'Category'),
-                  'vAlign'=>'middle',
-                  'width'=>'190px',
-                  'value'=>function ($model, $key, $index, $widget) { 
-                      return Html::a($model->category->desc_category, '#', []);
-                  },
-                  'format'=>'raw'
-              ],                    
-                  ['attribute'=>'value','format'=>['decimal',2], 'hAlign'=>'right', 'width'=>'110px'],
-              ];
-              echo ExportMenu::widget([
-              'dataProvider' => $dataProvider,
-              'columns' => $gridColumns,
-              'fontAwesome' => true,
-              'emptyText' => Yii::t('app', 'No entries found!'),
-              'showColumnSelector' => true,
-              'asDropdown' => true,
-              'target' => ExportMenu::TARGET_BLANK,
-              'showConfirmAlert' => false,
-              'exportConfig' => [
-                ExportMenu::FORMAT_HTML => false,
-                ExportMenu::FORMAT_PDF => false
-            ],
-            'columnSelectorOptions' => [
-              'class' => 'btn btn-primary btn-sm',
-            ],
-            'dropdownOptions' => [
-              'label' => Yii::t('app', 'Export Data'),
-              'class' => 'btn btn-primary btn-sm',
-            ],
-            ]);
-          ?>    
-     </div>
-    </div>
-    </div>
-</div>
- */
-
