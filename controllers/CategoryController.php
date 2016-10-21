@@ -57,19 +57,18 @@ class CategoryController extends BaseController
         $model = new Category();
         $model->user_id = Yii::$app->user->identity->id;
         $model->is_active = 1;
-        $model->type_id = 1;
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->parent_or_sub == 'parent') $model->parent_id = null;
+            $this->processCategory($model);
             if ($model->save()) { 
                 Yii::$app->session->setFlash("Category-success", Yii::t("app", "Category successfully included"));
                 return $this->redirect(['index']);
             }
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+        } 
+        //TODO:  need to flash fail to save message
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
 
     public function actionUpdate($id)
@@ -79,15 +78,34 @@ class CategoryController extends BaseController
             throw new ErrorException(Yii::t('app', 'Forbidden to change entries of other users'));
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash("Category-success", Yii::t("app", "Category updated"));
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            $this->processCategory($model);
+            if ($model->save()) {
+                Yii::$app->session->setFlash("Category-success", Yii::t("app", "Category updated"));
+                return $this->redirect(['index']);
+            }
+        } 
+        //TODO:  need to flash fail to update message
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+
+    private function processCategory($category)
+    {
+        if ($category->parent_or_sub == 'parent') { 
+            $category->parent_id = null;
+            // we're creating a new parent category, can only do make expense type parent categories
+            // the only revenue category is income
+            $category->type_id = 2; // expense  
+        } elseif ($category->parent->desc_category == 'Income') {
+            $category->type_id = 1;  // revenue 
         } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            $category->type_id = 2;
         }
     }
+    
+
 
     public function actionDelete($id)
     {
@@ -96,6 +114,9 @@ class CategoryController extends BaseController
             throw new ErrorException(Yii::t('app', 'Forbidden to change entries of other users'));
         }
         try {
+            if ($model->isParent()) {
+                $this->deleteSubCategories($model);
+            }
              $model->delete();
              Yii::$app->session->setFlash("Category-success", Yii::t("app", "Category successfully deleted"));
              return $this->redirect(['index']);
@@ -105,6 +126,16 @@ class CategoryController extends BaseController
              return $this->redirect(['index']);            
         }        
     }
+
+    private function deleteSubCategories($parentCategory)
+    {
+        Category::deleteAll([
+            'user_id' => Yii::$app->user->id,
+            'parent_or_sub' => 'sub',
+            'parent_id' => $parentCategory->id_category
+        ]);
+    }
+    
 
     protected function findModel($id)
     {

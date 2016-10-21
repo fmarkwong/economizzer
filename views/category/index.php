@@ -80,12 +80,15 @@ $this->title = Yii::t('app', 'Categories');
                             );
                         },
                         'delete' => function ($url, $model, $key) {
+                            $extraText = $model->isParent() ? ' Doing so will also delete all its subcategories.' : '';
                             return Html::a(
                                 '<span class="glyphicon glyphicon-trash hidden-xs"></span>',
                                 $url, 
                                 [
                                     'title' => Yii::t('app', 'delete'),
                                     'data-pjax' => '0',
+                                    'data-method' => 'post',
+                                    'data-confirm' => Yii::t('app', 'Are you sure you want to delete the ') . $model->desc_category . ' ' . Yii::t('app', 'Category') . '?' . $extraText,
                                 ]
                             );
                         },                    

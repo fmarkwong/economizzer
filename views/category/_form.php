@@ -38,14 +38,22 @@ $this->registerJs($js);
 
             <!-- Parent Category drop down -->
 <?php
-            if ($showParentCategoryDropDown) echo $form->field($model, 'parent_id')->dropDownList(ArrayHelper::map(app\models\Category::find()
-                ->where([
+            if ($showParentCategoryDropDown) {
+
+                $categoryQuery = app\models\Category::find()->where([
                     'parent_id' => null,
                     'user_id' => Yii::$app->user->identity->id, 
                     'is_active' => 1
-                ])
-                ->orderBy("desc_category ASC")
-                ->all(), 'id_category', 'desc_category'), ['id' => 'parent-category-form'])
+                ]);
+
+                if ($model->parent_or_sub == 'sub') {
+                    $categoryQuery->andWhere(['not in','desc_category', ['Savings Goals', 'Debt', 'Income']]);
+                }
+                $categoryQuery->orderBy("desc_category ASC");
+
+                
+                echo $form->field($model, 'parent_id')->dropDownList(ArrayHelper::map($categoryQuery->all(), 'id_category', 'desc_category'), ['id' => 'parent-category-form'])->label('Parent Category');
+            }
 ?>
 
 

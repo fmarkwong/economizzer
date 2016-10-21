@@ -164,6 +164,16 @@ SQL;
         return $this->getBudget($month, $year);
     }
 
+    public function isParent()
+    {
+        return $this->parent_or_sub == 'parent';
+    }
+
+    public function isSub()
+    {
+        return $this->parent_or_sub == 'sub';
+    }
+
     public function nullBudget($date = NULL)
     {
         $nullBudget = new Budget;
@@ -203,7 +213,7 @@ SQL;
                           'Income' =>
                               [
                                   'type' => 1,
-                                  'sub_categories' => ['All income']
+                                  'sub_categories' => ['General income']
                               ],
                       ];          
 
