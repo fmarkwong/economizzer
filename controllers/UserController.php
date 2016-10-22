@@ -21,6 +21,24 @@ class UserController extends BaseUserController{
         ];
     }
 
+    // fix bug where if you go to login page when already logged in,
+    // get error page
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['access'] ['denyCallback']  = function ($rule, $action) {
+            if ($action->actionMethod === 'actionLogin') {
+                if (Yii::$app->user->isGuest) {
+                    return $this->goHome();
+                } else {
+                    return $this->redirect(['/cashbook/index']);
+                }
+            }
+        };
+
+        return $behaviors;
+    }
+
     public function actionAuth(){
         return "wrong!";
     }
@@ -131,4 +149,15 @@ class UserController extends BaseUserController{
         return $this->render('crawler', compact("model"));
  
     }    
+    
+
+    /**
+     * Log user out and redirect
+     * overriading vendor/amnah/yii2-user/controllers/DefaulController.php
+     */
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+        return $this->goHome();
+    }
 }
