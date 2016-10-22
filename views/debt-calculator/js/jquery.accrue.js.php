@@ -223,9 +223,9 @@
                 '</div>');
         } else {
             elem.find(".form").append(
-                '<div class="accrue-field-'+name+'">'+
-                    '<p><label>'+options.field_titles[name]+':</label>'+
-                    '<input type="text" class="'+name+'" value="'+options.default_values[name]+'" />'+
+                '<div class="accrue-field-'+name+' form-group">'+
+                    '<p><label class="control-label">'+options.field_titles[name]+':</label>'+
+                    '<input type="text" class="'+name+' form-control" style="border: 1px solid #dce4ec;" value="'+options.default_values[name]+'" />'+
                     ( options.field_comments[name].length>0 ? "<small>"+options.field_comments[name]+"</small>" : '' )+'</p>'+
                 '</div>');
         }

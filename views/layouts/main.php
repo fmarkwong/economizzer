@@ -62,12 +62,13 @@ SCRIPT;
                 'encodeLabels' => false,
                 'items' => [
                     // ['label' => '<span class="glyphicon glyphicon-stats" aria-hidden="true"></span> '.Yii::t('app', 'Overview'), 'url' => ['/dashboard/overview'], 'visible' => !Yii::$app->user->isGuest,],
-                    ['label' => '<span class="glyphicon glyphicon-usd" aria-hidden="true"></span> '.Yii::t('app', 'Budgets'), 'url' => ['/cashbook/index'], 'visible' => !Yii::$app->user->isGuest,],
+                    ['label' => '<i class="fa fa-money" aria-hidden="true"></i> '.Yii::t('app', 'Budgets'), 'url' => ['/cashbook/index'], 'visible' => !Yii::$app->user->isGuest,],
+                    ['label' => '<i class="fa fa-calculator" aria-hidden="true"></i> '.Yii::t('app', 'Debt Calculator'), 'url' => ['/debt-calculator'], 'visible' => !Yii::$app->user->isGuest,],
                     // ['label' => '<span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> '.Yii::t('app', 'Targets'), 'url' => ['/cashbook/target'], 'visible' => !Yii::$app->user->isGuest,],
                     ['label' => '<span class="glyphicon glyphicon-tags" aria-hidden="true"></span> '.Yii::t('app', 'Categories'), 'visible' => !Yii::$app->user->isGuest, 'url' => ['/category/index']
                     ],
                     [
-                        'label' => 'Language',
+                        'label' => '<i class="fa fa-language" aria-hidden="true"></i> Language',
                         'items' => [
                             ['label' => '<span aria-hidden="true"></span> '.Yii::t('app', 'Burmese'), 'url' => ['/language/select?language=mm']],
                             ['label' => '<span aria-hidden="true"></span> '.Yii::t('app', 'English'), 'url' => ['/language/select?language=en']],
