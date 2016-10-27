@@ -52,7 +52,7 @@ $this->title = Yii::t('app', 'Account');
 
             <?php elseif (Yii::$app->getModule("user")->emailConfirmation): ?>
 
-                <p class="small"><?= Yii::t('user', 'Changing your email requires email confirmation') ?></p>
+                <p class="small"><?= Yii::t('app', 'Changing your email requires email confirmation') ?></p>
 
             <?php endif; ?>
 

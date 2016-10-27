@@ -10,7 +10,7 @@ $this->title = Yii::t('app', 'Categories');
 <div class="category-index">
     <h2>
         <span><?= Html::encode($this->title) ?></span>
-        <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Create').'', ['/category/create'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
+        <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'New').'', ['/category/create'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
     </h2>
     <hr/>
 
@@ -51,7 +51,7 @@ $this->title = Yii::t('app', 'Categories');
                 'format' => 'raw',
                 'enableSorting' => true,
                 'value' => function ($model) {                      
-                    return $model->parent ? $model->parent->desc_category." > ".$model->desc_category : "<span class=\"text-danger\"><em>".$model->desc_category."</em></span>";
+                    return $model->parent ? Yii::t('app', $model->parent->desc_category) . " > " . Yii::t('app', $model->desc_category) : "<span class=\"text-danger\"><em>" . Yii::t('app', $model->desc_category) . "</em></span>";
                 },
                 'contentOptions'=>['style'=>'width: 75%;text-align:left'],
             ],            
@@ -80,7 +80,7 @@ $this->title = Yii::t('app', 'Categories');
                             );
                         },
                         'delete' => function ($url, $model, $key) {
-                            $extraText = $model->isParent() ? ' Doing so will also delete all its subcategories.' : '';
+                            $extraText = $model->isParent() ? Yii::t('app', 'Doing so will also delete all its subcategories.') : '';
                             return Html::a(
                                 '<span class="glyphicon glyphicon-trash hidden-xs"></span>',
                                 $url, 
@@ -88,7 +88,7 @@ $this->title = Yii::t('app', 'Categories');
                                     'title' => Yii::t('app', 'delete'),
                                     'data-pjax' => '0',
                                     'data-method' => 'post',
-                                    'data-confirm' => Yii::t('app', 'Are you sure you want to delete the ') . $model->desc_category . ' ' . Yii::t('app', 'Category') . '?' . $extraText,
+                                    'data-confirm' => Yii::t('app', 'Are you sure you want to delete the') . ' ' . Yii::t('app', $model->desc_category) . ' ' . Yii::t('app', 'Category') . '?' . $extraText,
                                 ]
                             );
                         },                    

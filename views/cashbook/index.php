@@ -24,9 +24,11 @@ $tip = Tip(Yii::t('app', "Instructions"));
 
 $budgetedValueTooltip = Tip(Yii::t('app', "Enter how much you plan to spend in each category for the month"));
 $actualValueTooltip = Tip(Yii::t('app', "Each time you spend money in a category, record it here"));
-$savingsGoalTip = Tip(Yii::t('app', "Enter your amounts for each saving goal here"));
+
 $savingsBudgetedValueTip = Tip(Yii::t('app', "Enter how much you plan to save this month for each category"));
 $savingsActualValueTip = Tip(Yii::t('app', "Each time you set aside money for a goal, record it here"));
+$savingsGoalTip = Tip(Yii::t('app', "Enter your amounts for each saving goal here"));
+
 $debtBudgetedValueTip = Tip(Yii::t('app', "Enter how much you plan to pay down debt this month for each category"));
 $debtActualValueTip = Tip(Yii::t('app', "Each time you pay down debt for a category, record it here"));
 $debtPrincipalTip = Tip(Yii::t('app', "Enter the total principal for each debt here"));
@@ -191,9 +193,9 @@ $debtPrincipalTip = Tip(Yii::t('app', "Enter the total principal for each debt h
         <br>
         <div class="cashbook-index">  <!-- TRANSACTIONS -->
             <h2>
-                <span>Account</span>
+            <span><?= Yii::t('app', 'Account') ?></span>
                 <?php $account_balance_color = cashBookHelper::balanceColor($accountBalance) ?>
-                <span style="color: <?=$account_balance_color?>; font-size: 20px; vertical-align: middle"> Balance: <?= $accountBalance ?></span>
+                <span style="color: <?=$account_balance_color?>; font-size: 20px; vertical-align: middle"><?= Yii::t('app', 'Balance') ?>: <?= $accountBalance ?></span>
                 <?= Html::a('<i class="fa fa-plus"></i> '.Yii::t('app', 'Add Income').'', ['/transaction/new'], ['class'=>'btn btn-primary grid-button pull-right']) ?>
             </h2>
             <hr/>
@@ -214,8 +216,9 @@ $debtPrincipalTip = Tip(Yii::t('app', "Enter the total principal for each debt h
                     foreach($transactions as $transaction) {
                         $category = $transaction->category;
                         $plusMinus = $category->type_id == 1 ? '+' : '-';
-                        $category_desc = $category->desc_category;
+                        $category_desc = Yii::t('app', $category->desc_category);
                         $parent_category_desc = $category->getParent() ? $category->getParent()->one()->desc_category : NULL;
+                        $parent_category_desc = Yii::t('app', $parent_category_desc); 
                         echo $this->render('_transaction_row', compact('plusMinus', 'transaction', 'category_desc', 'parent_category_desc'));
                     } 
 ?>

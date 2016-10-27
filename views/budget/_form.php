@@ -9,7 +9,7 @@ use kartik\widgets\DatePicker;
 ?>
 
 <div class="cashbook-create">
-<h2><?= Html::encode($title) ?></h2>
+<h2><?= Yii::t('app', $title) ?></h2>
 <div class="cashbook-form">
 
 <div class="col-md-8">
