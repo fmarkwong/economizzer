@@ -33,6 +33,7 @@ $this->registerJs($js);
 ?>
 
             <!-- Category Name text field -->
+            <?php $model->desc_category = Yii::t('app', $model->desc_category) ?>
             <?= $form->field($model, 'desc_category')->textInput(['maxlength' => 45]) ?>
 
 
@@ -50,9 +51,13 @@ $this->registerJs($js);
                     $categoryQuery->andWhere(['not in','desc_category', ['Savings Goals', 'Debt', 'Income']]);
                 }
                 $categoryQuery->orderBy("desc_category ASC");
+                $categoryData = $categoryQuery->all();
 
+                foreach($categoryData as $category) {
+                    $category->desc_category = Yii::t('app', $category->desc_category);
+                }
                 
-                echo $form->field($model, 'parent_id')->dropDownList(ArrayHelper::map($categoryQuery->all(), 'id_category', 'desc_category'), ['id' => 'parent-category-form'])->label('Parent Category');
+                echo $form->field($model, 'parent_id')->dropDownList(ArrayHelper::map($categoryData, 'id_category', 'desc_category'), ['id' => 'parent-category-form'])->label('Parent Category');
             }
 ?>
 

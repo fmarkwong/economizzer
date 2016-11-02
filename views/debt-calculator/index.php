@@ -9,7 +9,7 @@ $this->registerCssFile('/css/loan-calculator.css');
 
 ?>
 <br>
-<h2>Debt Calculator</h2>
+<h2><?= Yii::t('app', 'Debt Calculator') ?></h2>
 <br>
 <hr>
 

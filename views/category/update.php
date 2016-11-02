@@ -2,12 +2,12 @@
 
 use yii\helpers\Html;
 
-$this->title = Yii::t('app', "Update $model->desc_category Category");
+$this->title = Yii::t('app', 'Update') . ' ' . Yii::t('app', $model->desc_category) . ' ' . Yii::t('app', 'Category');
 
 ?>
 <div class="category-update">
 
-    <h2><?= Html::encode($this->title) ?></h2>
+    <h2><?= $this->title ?></h2>
     <hr/>
 
     <?= $this->render('_form', [
