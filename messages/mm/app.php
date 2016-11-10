@@ -140,7 +140,6 @@ return [
     'General income' => '‘ေယဘုယ် ၀င္ေငြ',
     'Debt Calculator' => 'အေၾကြး တြက္ယူျခင္း',
     'Yearly Interest Rate' => '‘ႏွစ္စဥ္ အတိုးႏႈန္း',
-    'Months to Pay' =>  '‘ေငြေပးရန္ လမ်ား',
     'Monthly Payment' => 'လစဥ္ ေပးသည့္ေငြ',
     'Number of Payments' => 'ငြေပးသည့္ အႀကိမ္အေရအတြက္',
     'Total Payment' => 'စုစုေပါင္း ေငြေပး',
@@ -167,4 +166,5 @@ return [
 'Number of Payments' => 'ေပးသည့္ အႀကိမ္အေရအတြက္',
 'Total Payment' => 'စုစုေပါင္း ေပးသည့္ ပမာဏ',
 'Total Interest' => 'စုစုေပါင္း အတိုးပမာဏ',
+'Results' => 'ရလဒ်များကို',
 ];

@@ -1,4 +1,3 @@
-<?php use Yii; ?>
 $(function(){
     $('#term-date-picker input').datepicker({
         format: "yyyy/mm/dd",
@@ -23,10 +22,10 @@ $(".calculator-loan").accrue({
     term: termDefaultValue, 
   },
   field_titles: {
-    amount: "Loan Amount",
-    rate: "Yearly Interest Rate",
+      amount: "<?= Yii::t('app', 'Loan Amount') ?>",
+    rate: "<?= Yii::t('app', 'Yearly Interest Rate') ?>",
     rate_compare: "Comparison Rate",
-    term: "Months To Pay"
+    term: "<?= Yii::t('app', 'Months to Pay') ?>"
   },
   button_label: "Calculate",
   field_comments: {
@@ -37,10 +36,10 @@ $(".calculator-loan").accrue({
   },
   response_output_div: ".results",
   response_basic: 
-    '<p><strong>{{ Yii::t('app', 'Monthly Payment') }}:</strong><br>%payment_amount%</p>'+
-    '<p><strong>Number of Payments:</strong><br>%num_payments%</p>'+
-    '<p><strong>Total Payment:</strong><br>%total_payments%</p>'+
-    '<p><strong>Total Interest:</strong><br>%total_interest%</p>',
+    '<p><strong><?= Yii::t('app', 'Monthly Payment') ?>:</strong><br>%payment_amount%</p>'+
+    '<p><strong><?= Yii::t('app', 'Number of Payments') ?>:</strong><br>%num_payments%</p>'+
+    '<p><strong><?= Yii::t('app', 'Total Payment') ?>:</strong><br>%total_payments%</p>'+
+    '<p><strong><?= Yii::t('app', 'Total Interest') ?>:</strong><br>%total_interest%</p>',
   response_compare: "Save $%savings% in interest!",
   error_text: "Please fill in all fields.",
   callback: function ( elem, data ){
