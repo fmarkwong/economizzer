@@ -1,3 +1,4 @@
+<?php use Yii; ?>
 $(function(){
     $('#term-date-picker input').datepicker({
         format: "yyyy/mm/dd",
@@ -36,7 +37,7 @@ $(".calculator-loan").accrue({
   },
   response_output_div: ".results",
   response_basic: 
-    '<p><strong>Monthly Payment:</strong><br>%payment_amount%</p>'+
+    '<p><strong>{{ Yii::t('app', 'Monthly Payment') }}:</strong><br>%payment_amount%</p>'+
     '<p><strong>Number of Payments:</strong><br>%num_payments%</p>'+
     '<p><strong>Total Payment:</strong><br>%total_payments%</p>'+
     '<p><strong>Total Interest:</strong><br>%total_interest%</p>',
